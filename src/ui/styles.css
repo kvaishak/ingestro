@@ -43,3 +43,12 @@ button:disabled { cursor: default; opacity: .5; }
 .grid-row { position: absolute; top: 0; left: 0; right: 0; height: var(--row-h); border-bottom: 1px solid #f0f1f3; background: #fff; }
 .cell { padding: 0 8px; line-height: var(--row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell.gutter { padding: 0; }
+
+/* search + sortable headers */
+.toolbar .search { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; width: 280px; font: inherit; }
+.grid-header .th { all: unset; box-sizing: border-box; display: block; cursor: pointer; padding: 0 8px; line-height: var(--row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: #374151; }
+.grid-header .th:hover:not(:disabled) { background: #eef1f4; }
+.grid-header .th:disabled { cursor: default; opacity: .6; }
+.grid-header .th.active { color: var(--blue); }
+.grid-header .th .arrow { font-size: 10px; margin-left: 4px; color: #9ca3af; }
+.grid-header .th.active .arrow { color: var(--blue); }

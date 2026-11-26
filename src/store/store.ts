@@ -47,6 +47,16 @@ export function reset(): void {
   bump()
 }
 
+/**
+ * The view for "no search, no sort": every row, in the order it appeared in the file.
+ * The grid only ever reads a position list, so even this trivial order has to be one.
+ */
+export function positionsInFileOrder(): Uint32Array {
+  const v = new Uint32Array(store.rowCount)
+  for (let i = 0; i < v.length; i++) v[i] = i
+  return v
+}
+
 export function appendBatch(rows: Row[]): void {
   for (const r of rows) store.rows.push(r)
   store.rowCount += rows.length

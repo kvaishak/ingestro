@@ -1,18 +1,13 @@
 import type { WorkerIn, WorkerOut } from '../worker/protocol'
-import { store, reset, appendBatch, bump } from './store'
+import { store, reset, appendBatch, positionsInFileOrder, bump } from './store'
+import { buildView, resetQuery } from './query'
 
 let worker: Worker | null = null
-
-/** Positions 0..rowCount-1 in file order. */
-function allPositions(): Uint32Array {
-  const v = new Uint32Array(store.rowCount)
-  for (let i = 0; i < v.length; i++) v[i] = i
-  return v
-}
 
 export function loadFile(file: File | Blob): void {
   worker?.terminate()
   reset()
+  resetQuery()
   store.loading = { status: 'loading', rowsLoaded: 0, bytesRead: 0, bytesTotal: file.size }
   bump()
 
@@ -24,11 +19,11 @@ export function loadFile(file: File | Blob): void {
       store.loading.rowsLoaded = store.rowCount
       store.loading.bytesRead = msg.bytesRead
       store.loading.bytesTotal = msg.bytesTotal
-      store.view = allPositions() // grid is usable while loading
+      store.view = positionsInFileOrder() // grid is usable while loading
       bump()
     } else if (msg.type === 'done') {
       store.loading.status = 'done'
-      store.view = allPositions()
+      store.view = buildView()
       bump()
       worker?.terminate()
       worker = null
