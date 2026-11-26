@@ -47,6 +47,11 @@ export function Toolbar() {
       />
       <span className="spacer" />
       <span className="hint" data-testid="rowcount">{count}</span>
+      {ready && (
+        <span className="hint" data-testid="problemcount">
+          · {store.problemCells.toLocaleString('en-US')} problems in {store.problemRows.toLocaleString('en-US')} rows
+        </span>
+      )}
       <button className="btn primary" disabled title="Available once every problem is resolved">
         Import
       </button>

@@ -9,6 +9,13 @@ import { Cell } from './Cell'
 const ROW_HEIGHT = 32
 const OVERSCAN = 10
 
+function rowHasIssue(row: number): boolean {
+  for (let c = 0; c < COLUMNS.length; c++) {
+    if (store.flags[c][row] !== 0) return true
+  }
+  return false
+}
+
 /**
  * Virtualized grid. Reads row positions from store.view and never touches store.rows order.
  * Only the rows inside the viewport (plus OVERSCAN) exist in the DOM.
@@ -61,6 +68,7 @@ export function Grid() {
       <div className="grid-body" style={{ height: virtualizer.getTotalSize() }}>
         {virtualizer.getVirtualItems().map((item) => {
           const row = store.view[item.index]
+          const hasIssue = rowHasIssue(row)
           return (
             <div
               className="grid-row grid-cols"
@@ -68,7 +76,7 @@ export function Grid() {
               data-row={row}
               style={{ transform: `translateY(${item.start}px)` }}
             >
-              <div className="cell gutter" />
+              <div className="cell gutter">{hasIssue && <i className="dot" title="This row has a problem" />}</div>
               {COLUMNS.map((_, col) => (
                 <Cell row={row} col={col} key={col} />
               ))}

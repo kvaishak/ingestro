@@ -41,3 +41,12 @@ test('only the first rowCount rows are considered (overlays may have spare capac
   markDuplicates(rows, 1, flags, null)
   expect(flags[E][0]).toBe(0)
 })
+
+// ---- shared core, also used by the worker at the end of loading ----
+import { positionsWithRepeatedValues } from './duplicates'
+
+test('positionsWithRepeatedValues returns every position whose value appears more than once, skipping nulls', () => {
+  expect(positionsWithRepeatedValues(['a', 'b', 'a', null, null, 'c', 'b'])).toEqual([0, 2, 1, 6])
+  expect(positionsWithRepeatedValues(['x', 'y'])).toEqual([])
+  expect(positionsWithRepeatedValues([])).toEqual([])
+})

@@ -18,7 +18,7 @@ export default function App() {
     if (name && status === 'idle') fetchCsv(name)
   }, [status])
 
-  if (status === 'loading' && startedAt.current === null) startedAt.current = performance.now()
+  if ((status === 'loading' || status === 'checking') && startedAt.current === null) startedAt.current = performance.now()
   const elapsed = status === 'done' && startedAt.current !== null ? (performance.now() - startedAt.current) / 1000 : null
 
   if (status === 'idle') return <div className="app"><FilePicker /></div>
