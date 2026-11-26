@@ -7,6 +7,8 @@ import { LoadingBar } from './ui/LoadingBar'
 import { Toolbar } from './ui/Toolbar'
 import { Grid } from './ui/Grid'
 import { IssuePanel } from './ui/IssuePanel'
+import { Toast } from './ui/Toast'
+import { undoLastChange } from './ui/actions'
 
 export default function App() {
   useStoreVersion()
@@ -21,6 +23,19 @@ export default function App() {
 
   if ((status === 'loading' || status === 'checking') && startedAt.current === null) startedAt.current = performance.now()
   const elapsed = status === 'done' && startedAt.current !== null ? (performance.now() - startedAt.current) / 1000 : null
+
+  // Cmd/Ctrl+Z undoes the last change unless the user is typing in a field.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = (e.target as HTMLElement | null)?.tagName === 'INPUT'
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !typing) {
+        e.preventDefault()
+        undoLastChange()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   if (status === 'idle') return <div className="app"><FilePicker /></div>
 
@@ -40,6 +55,7 @@ export default function App() {
           <Grid />
         </div>
       </div>
+      <Toast />
     </div>
   )
 }

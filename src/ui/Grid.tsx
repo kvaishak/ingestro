@@ -5,6 +5,7 @@ import { query, setQuery } from '../store/query'
 import { store } from '../store/store'
 import { useStoreVersion } from '../store/useStore'
 import { Cell } from './Cell'
+import { session, startEditing } from './session'
 
 const ROW_HEIGHT = 32
 const OVERSCAN = 10
@@ -69,16 +70,25 @@ export function Grid() {
         {virtualizer.getVirtualItems().map((item) => {
           const row = store.view[item.index]
           const hasIssue = rowHasIssue(row)
+          const isEditingRow = session.editing?.row === row
           return (
             <div
-              className="grid-row grid-cols"
+              className={`grid-row grid-cols${isEditingRow ? ' editing' : ''}`}
               key={item.key}
               data-row={row}
               style={{ transform: `translateY(${item.start}px)` }}
             >
               <div className="cell gutter">{hasIssue && <i className="dot" title="This row has a problem" />}</div>
               {COLUMNS.map((_, col) => (
-                <Cell row={row} col={col} key={col} />
+                <div
+                  key={col}
+                  className="cellwrap"
+                  tabIndex={0}
+                  onDoubleClick={() => ready && startEditing(row, col)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && ready) startEditing(row, col) }}
+                >
+                  <Cell row={row} col={col} />
+                </div>
               ))}
             </div>
           )

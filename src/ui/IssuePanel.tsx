@@ -14,7 +14,12 @@ const fmt = (n: number) => n.toLocaleString('en-US')
 export function IssuePanel() {
   if (store.loading.status !== 'done') return <aside className="panel" />
   const selected = query.issueKey ? issueByKey(query.issueKey) : null
-  return <aside className="panel">{selected ? <IssueDetail issue={selected} /> : <IssueList />}</aside>
+  return (
+    <aside className="panel">
+      <Readiness />
+      {selected ? <IssueDetail issue={selected} /> : <IssueList />}
+    </aside>
+  )
 }
 
 /** How close the file is to importable: rows with no problem at all, over all rows. */
@@ -37,7 +42,6 @@ function IssueList() {
   const columnsWithProblems = COLUMNS.filter((column) => issuesIn(column).length > 0)
   return (
     <>
-      <Readiness />
       <h2>Problems found</h2>
       <p className="muted">
         {fmt(store.problemCells)} values in {fmt(store.problemRows)} rows. Click one to see those rows.
