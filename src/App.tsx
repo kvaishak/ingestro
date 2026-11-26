@@ -6,6 +6,7 @@ import { FilePicker } from './ui/FilePicker'
 import { LoadingBar } from './ui/LoadingBar'
 import { Toolbar } from './ui/Toolbar'
 import { Grid } from './ui/Grid'
+import { IssuePanel } from './ui/IssuePanel'
 
 export default function App() {
   useStoreVersion()
@@ -32,8 +33,13 @@ export default function App() {
           {elapsed !== null && <span className="hint">in {elapsed.toFixed(1)} s</span>}
         </div>
       )}
-      <Toolbar />
-      <Grid />
+      <div className="workspace">
+        <IssuePanel />
+        <div className="main">
+          <Toolbar />
+          <Grid />
+        </div>
+      </div>
     </div>
   )
 }

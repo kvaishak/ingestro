@@ -1,4 +1,5 @@
 import { columnIndex, type Column } from '../validation/columns'
+import { issueByKey } from '../validation/catalog'
 import { store, positionsInFileOrder, bump } from './store'
 
 export interface SortSpec {
@@ -25,34 +26,21 @@ const SPEND = columnIndex('monthly_spend')
 
 /**
  * Builds the list of row positions the grid shows. Data never moves.
- * Pipeline: (issue filter, Stage 2) -> search -> sort. Filtering first means sorting fewer rows.
+ * Pipeline: issue filter -> search -> sort. Each step narrows, so the next one has less to do.
+ * `positions === null` means "every row" and lets the cheap case skip allocating a list.
  */
 export function buildView(): Uint32Array {
-  const n = store.rowCount
-  const rows = store.rows
-
-  // 1. candidates: everything (issue filter and removed-row skip arrive in Stage 2)
   let positions: number[] | null = null
 
-  // 2. search: case-insensitive substring over all 8 cells
-  const needle = query.search.trim().toLowerCase()
-  if (needle) {
-    positions = []
-    for (let i = 0; i < n; i++) {
-      const r = rows[i]
-      for (let c = 0; c < r.length; c++) {
-        if (r[c].toLowerCase().includes(needle)) {
-          positions.push(i)
-          break
-        }
-      }
-    }
-  }
+  if (query.issueKey) positions = rowsWithIssue(query.issueKey)
 
-  // 3. sort the positions, never the rows
+  const needle = query.search.trim().toLowerCase()
+  if (needle) positions = rowsMatchingSearch(needle, positions)
+
   const sort = query.sort
   if (sort) {
     if (!positions) positions = Array.from(positionsInFileOrder())
+    const rows = store.rows
     const col = columnIndex(sort.column)
     const sign = sort.dir === 'asc' ? 1 : -1
     const cmp =
@@ -63,6 +51,36 @@ export function buildView(): Uint32Array {
   }
 
   return positions ? Uint32Array.from(positions) : positionsInFileOrder()
+}
+
+/** Rows whose cell in the issue's column carries exactly that issue code. */
+function rowsWithIssue(issueKey: string): number[] {
+  const issue = issueByKey(issueKey)
+  const columnFlags = store.flags[columnIndex(issue.column)]
+  const positions: number[] = []
+  for (let i = 0; i < store.rowCount; i++) {
+    if (columnFlags[i] === issue.code) positions.push(i)
+  }
+  return positions
+}
+
+/** Case-insensitive substring match over all 8 cells, over the given candidates (or every row). */
+function rowsMatchingSearch(needle: string, candidates: number[] | null): number[] {
+  const rows = store.rows
+  const matches: number[] = []
+  const count = candidates ? candidates.length : store.rowCount
+  for (let k = 0; k < count; k++) {
+    const i = candidates ? candidates[k] : k
+    if (rowContains(rows[i], needle)) matches.push(i)
+  }
+  return matches
+}
+
+function rowContains(row: string[], needle: string): boolean {
+  for (let c = 0; c < row.length; c++) {
+    if (row[c].toLowerCase().includes(needle)) return true
+  }
+  return false
 }
 
 // Dictionary-style ordering: "pl" sorts next to "PL", "Müller" next to "Muller".

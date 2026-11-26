@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { store } from '../store/store'
 import { query, setQuery } from '../store/query'
+import { issueByKey } from '../validation/catalog'
 
 const DEBOUNCE_MS = 200
 
@@ -30,9 +31,11 @@ export function Toolbar() {
 
   const total = store.rowCount
   const shown = store.view.length
-  const count = query.search && shown !== total
+  const isNarrowed = Boolean(query.search || query.issueKey)
+  const count = isNarrowed
     ? `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} rows`
     : `${total.toLocaleString('en-US')} rows`
+  const activeIssue = query.issueKey ? issueByKey(query.issueKey) : null
 
   return (
     <div className="toolbar">
@@ -45,13 +48,14 @@ export function Toolbar() {
         onChange={(e) => onChange(e.target.value)}
         aria-label="Search all columns"
       />
-      <span className="spacer" />
-      <span className="hint" data-testid="rowcount">{count}</span>
-      {ready && (
-        <span className="hint" data-testid="problemcount">
-          · {store.problemCells.toLocaleString('en-US')} problems in {store.problemRows.toLocaleString('en-US')} rows
+      {activeIssue && (
+        <span className="chip" data-testid="filterchip">
+          Showing: {activeIssue.title}
+          <button onClick={() => setQuery({ issueKey: null })} title="Show all rows" aria-label="Show all rows">✕</button>
         </span>
       )}
+      <span className="spacer" />
+      <span className="hint" data-testid="rowcount">{count}</span>
       <button className="btn primary" disabled title="Available once every problem is resolved">
         Import
       </button>

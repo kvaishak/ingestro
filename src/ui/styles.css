@@ -57,3 +57,23 @@ button:disabled { cursor: default; opacity: .5; }
 .cell.issue { box-shadow: inset 3px 0 0 var(--red); background: var(--red-bg); }
 .cell.empty { color: #9ca3af; font-style: italic; font-size: 12px; }
 .cell.gutter .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); vertical-align: middle; margin-left: 5px; }
+
+/* workspace: issues panel on the left, grid on the right */
+.workspace { flex: 1; min-height: 0; display: flex; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.panel { width: 320px; flex: none; border-right: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 14px; }
+.panel h2 { font-size: 15px; margin: 8px 0 6px; }
+.panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 16px 0 6px; }
+.panel p { margin: 6px 0; color: #374151; }
+.panel .example { background: #f3f4f6; border-radius: 6px; padding: 8px 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+.issue-row { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 8px; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; margin: 4px 0; }
+.issue-row:hover { border-color: #9ca3af; }
+.issue-row .count { color: var(--muted); font-variant-numeric: tabular-nums; }
+.btn.ghost { background: transparent; border-color: transparent; padding-left: 0; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-bg); color: var(--blue); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.chip button { border: 0; background: transparent; color: inherit; padding: 0; font-size: 12px; }
+
+/* import readiness */
+.readiness { margin: 4px 0 14px; }
+.readiness .bar { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; margin: 6px 0 4px; }
+.readiness .bar i { display: block; height: 100%; background: var(--green); }

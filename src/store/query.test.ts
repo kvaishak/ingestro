@@ -1,5 +1,5 @@
 import { test, expect, beforeEach } from 'vitest'
-import { store, reset, appendBatch } from './store'
+import { store, reset, appendBatch, positionsInFileOrder } from './store'
 import { setQuery, resetQuery, query } from './query'
 
 const mk = (spend: string, last: string) => ['C', 'x', last, 'e', 'd', 'c', 'p', spend]
@@ -57,4 +57,32 @@ test('setQuery merges partial updates and bumps the version', () => {
   expect(query.search).toBe('a')
   expect(query.sort).toBeNull()
   expect(store.version).toBe(v + 1)
+})
+
+// ---- Stage 2: filter by problem type ----
+import { COLUMNS } from '../validation/columns'
+import { validateCell } from '../validation/rules'
+
+const withEmail = (email: string) => ['C', 'Anna', 'M', email, '2024-01-02', 'DE', 'pro', '1']
+const flagsFor = (rows: string[][]) =>
+  COLUMNS.map((column, c) => Uint8Array.from(rows.map((r) => validateCell(column, r[c]))))
+
+test('issue filter keeps only rows whose cell has that problem, and composes with search and sort', () => {
+  reset()
+  resetQuery()
+  const rows = [withEmail(''), withEmail('ok@b.co'), withEmail(''), withEmail('x'), withEmail('ok2@b.co')]
+  appendBatch(rows, flagsFor(rows))
+  store.view = positionsInFileOrder()
+
+  setQuery({ issueKey: 'email.missing' })
+  expect([...store.view]).toEqual([0, 2])
+
+  setQuery({ issueKey: 'email.invalid' })
+  expect([...store.view]).toEqual([3])
+
+  setQuery({ issueKey: null })
+  expect(store.view.length).toBe(5)
+
+  setQuery({ issueKey: 'email.missing', sort: { column: 'customer_id', dir: 'desc' } })
+  expect([...store.view]).toHaveLength(2)
 })
