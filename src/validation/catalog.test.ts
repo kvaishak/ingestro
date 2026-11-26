@@ -30,3 +30,13 @@ test('copy is plain language: no jargon', () => {
     expect(i.good.length).toBeGreaterThan(0)
   }
 })
+
+// ---- Stage 4: suggestions hang off catalog entries ----
+import { suggestionFor } from './catalog'
+
+test('suggestionFor returns the entry suggestion where one exists, otherwise undefined', () => {
+  expect(suggestionFor('country', codeOf('country.invalid'), 'Deutschland')).toBe('DE')
+  expect(suggestionFor('country', codeOf('country.invalid'), 'Narnia')).toBeUndefined()
+  expect(suggestionFor('email', codeOf('email.invalid'), 'x')).toBeUndefined()
+  expect(suggestionFor('country', 0, 'DE')).toBeUndefined()
+})

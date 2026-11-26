@@ -1,4 +1,5 @@
 import type { Column } from './columns'
+import { countryCodeFor } from './countries'
 
 /**
  * Every kind of problem the tool recognises, with the words the user reads.
@@ -17,6 +18,12 @@ export interface IssueDef {
   what: string
   /** What a good value looks like */
   good: string
+  /**
+   * For problems where the tool can tell what the value should be: the suggested value,
+   * or undefined when it cannot tell for this particular value. Computed on demand,
+   * never stored, never applied without the user's click.
+   */
+  suggest?: (value: string) => string | undefined
 }
 
 export const CATALOG: IssueDef[] = [
@@ -82,7 +89,8 @@ export const CATALOG: IssueDef[] = [
   { key: 'country.invalid', column: 'country', code: 2,
     title: 'Country is not a two-letter code',
     what: 'Countries must be written as their two-letter code in capitals, not as a name.',
-    good: 'DE for Germany, FR for France, US for the United States' },
+    good: 'DE for Germany, FR for France, US for the United States',
+    suggest: countryCodeFor },
 
   // plan
   { key: 'plan.missing', column: 'plan', code: 1,
@@ -127,4 +135,10 @@ export function issueFor(column: Column, code: number): IssueDef | undefined {
 
 export function codeOf(key: string): number {
   return issueByKey(key).code
+}
+
+/** The suggested value for a cell, if the problem on it comes with one. */
+export function suggestionFor(column: Column, code: number, value: string): string | undefined {
+  const issue = issueFor(column, code)
+  return issue?.suggest?.(value)
 }
