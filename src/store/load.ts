@@ -3,6 +3,7 @@ import { store, reset, appendBatch, positionsInFileOrder, bump } from './store'
 import { buildView, resetQuery } from './query'
 import { recount } from './counts'
 import { applyDuplicatePositions } from './duplicateMarks'
+import { resetHistory } from './changes'
 
 let worker: Worker | null = null
 
@@ -16,6 +17,7 @@ export function loadFile(file: File | Blob): void {
   worker?.terminate()
   reset()
   resetQuery()
+  resetHistory()
   store.loading = { status: 'loading', rowsLoaded: 0, bytesRead: 0, bytesTotal: file.size }
   bump()
 

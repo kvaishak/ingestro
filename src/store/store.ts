@@ -17,7 +17,8 @@ const INITIAL_CAPACITY = 65_536
  *
  * Rows never move once appended: every other structure refers to a row by its position.
  * The overlays are parallel arrays indexed by that same position:
- *   flags[column][row]  = issue code for that cell, 0 = fine (see validation/catalog.ts)
+ *   flags[column][row]    = issue code for that cell, 0 = fine (see validation/catalog.ts)
+ *   changed[column][row]  = 1 when the cell differs from the value that was loaded
  * React components subscribe to `version` and re-read what they need.
  */
 export const store = {
@@ -26,6 +27,8 @@ export const store = {
 
   /** One byte per cell per column: the issue code. Capacity may exceed rowCount. */
   flags: emptyOverlays(),
+  /** One byte per cell per column: 1 when the user changed the cell. Same capacity as flags. */
+  changed: emptyOverlays(),
 
   /** Problems per issue key, e.g. 'email.missing' -> 1234. Rebuilt by recount(). */
   counts: new Map<string, number>(),
@@ -68,6 +71,7 @@ export function reset(): void {
   store.rows = []
   store.rowCount = 0
   store.flags = emptyOverlays()
+  store.changed = emptyOverlays()
   store.counts = new Map()
   store.problemCells = 0
   store.problemRows = 0
@@ -103,9 +107,12 @@ function ensureOverlayCapacity(needed: number): void {
   if (needed <= current) return
   let capacity = current
   while (capacity < needed) capacity *= 2
-  store.flags = store.flags.map((old) => {
-    const grown = new Uint8Array(capacity)
-    grown.set(old)
-    return grown
-  })
+  store.flags = store.flags.map((old) => grow(old, capacity))
+  store.changed = store.changed.map((old) => grow(old, capacity))
+}
+
+function grow(old: Uint8Array, capacity: number): Uint8Array {
+  const grown = new Uint8Array(capacity)
+  grown.set(old)
+  return grown
 }

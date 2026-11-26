@@ -16,10 +16,21 @@ export interface Query {
 
 export const query: Query = { issueKey: null, search: '', sort: null }
 
+/**
+ * Rows the user fixed while a problem filter was active. They no longer match the filter,
+ * but they stay in view so nothing jumps away under the cursor. Cleared when the filter changes.
+ */
+const pinnedRows = new Set<number>()
+
+export function pinRow(row: number): void {
+  if (query.issueKey) pinnedRows.add(row)
+}
+
 export function resetQuery(): void {
   query.issueKey = null
   query.search = ''
   query.sort = null
+  pinnedRows.clear()
 }
 
 const SPEND = columnIndex('monthly_spend')
@@ -53,13 +64,13 @@ export function buildView(): Uint32Array {
   return positions ? Uint32Array.from(positions) : positionsInFileOrder()
 }
 
-/** Rows whose cell in the issue's column carries exactly that issue code. */
+/** Rows whose cell in the issue's column carries exactly that issue code, plus rows pinned after a fix. */
 function rowsWithIssue(issueKey: string): number[] {
   const issue = issueByKey(issueKey)
   const columnFlags = store.flags[columnIndex(issue.column)]
   const positions: number[] = []
   for (let i = 0; i < store.rowCount; i++) {
-    if (columnFlags[i] === issue.code) positions.push(i)
+    if (columnFlags[i] === issue.code || pinnedRows.has(i)) positions.push(i)
   }
   return positions
 }
@@ -101,7 +112,13 @@ function compareSpend(a: string, b: string): number {
   return compareText(a, b)
 }
 
+/** Recompute the view for the current query without changing it (after a data change). */
+export function refreshView(): void {
+  store.view = buildView()
+}
+
 export function setQuery(patch: Partial<Query>): void {
+  if ('issueKey' in patch && patch.issueKey !== query.issueKey) pinnedRows.clear()
   Object.assign(query, patch)
   store.view = buildView()
   bump()
