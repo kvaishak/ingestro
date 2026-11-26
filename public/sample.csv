@@ -1,0 +1,201 @@
+customer_id,first_name,last_name,email,signup_date,country,plan,monthly_spend
+C-0000001,Yuki,Silva,yuki.silva1@corp.example,2023-08-01,PL,pro,68
+C-0000002,Tomas,Schmidt,tomas.schmidt2@mail.test,2022-01-02,DE,free,0
+C-0000003,Omar,Dubois,omar.dubois3@mail.test,13 Dec 2019,FR,enterprise,7799
+C-0000004,Mia,Rossi,mia.rossi4@example.com,2025-07-26,IT,pro,181
+C-0000005,Omar,Kowalski,omar.kowalski5@mail.test,2024-11-03,Italy,pro,171
+C-0000006,Tomas,Rossi,tomas.rossi6@corp.example,2021-02-25,fr,free,0
+C-0000007,Anna,Weber,anna.weber7@mail.test,2025-07-28,US,pro,107
+C-0000008,Noah,Haddad,noah.haddad8@example.com,2021-04-09,ES,pro,143
+C-0000009,Emma,García,emma.garca9@corp.example,2020-11-15,IT,free,0
+C-0000010,Ines,Tanaka,ines.tanaka10@example.com,2023-10-28,NL,pro,117
+C-0000011,Yuki,Nguyen,yuki.nguyen11@corp.example,21 Aug 2019,NL,pro,177
+C-0000012,Ines,Tanaka,ines.tanaka12@corp.example,2022-06-14,FR,free,0
+C-0000013,Lena,Kowalski,lena.kowalski13@example.com,2022-07-03,FR,free,€ 0
+C-0000014,Luca,O'Brien,luca.obrien14@example.com,2020-09-19,PL,enterprise,6876
+C-0000015,Hana,Müller,hana.mller15@mail.test,2024-04-14,IT,enterprise,5062
+C-0000016,Chloe,Costa,chloe.costa16@mail.test,2022-11-18,The Netherlands,enterprise,3124
+C-0000017,Priya,García,priya.garca17@example.com,2019-06-26,US,free,0
+C-0000018,Lena,Silva,lena.silva18@mail.test,2020-09-08,PL,free,0
+C-0000019,Yuki,Lindqvist,yuki.lindqvist19@corp.example,2023-12-04,IT,pro,62
+C-0000020,Anna,Kowalski,anna.kowalski20@example.com,2019-10-13,fr,enterprise,3404
+C-0000021,Elena,Tanaka,sofia.costa107@mail.test,2 Sep 2022,FR,pro,141
+C-0000022,Omar,Novak,omar.novak22@example.com,2025-03-14,it,free,0
+C-0000023,Yuki,Tanaka,yuki.tanaka23@corp.example,2021-04-15,FRANCE,pro,56
+C-0000024,Priya,Schmidt,priya.schmidt24@corp.example,2019-09-06,gb,free,0
+C-0000025,Ahmed,Lindqvist,ahmed.lindqvist25@example.com,01/06/2024,Netherlands,free,0
+C-0000026,Luca,Khan,luca.khan26@mail.test,2019-06-25,Polska,enterprise,6147
+C-0000027,Elena,Kowalski,elena.kowalski27@corp.example,2025-05-23,España,free,0
+C-0000028,Anna,Costa,anna.costa28@corp.example,2023-10-13,it,pro,88
+C-0000029,Tomas,O'Brien,tomas.obrien29@mail.test,2019-07-02,,enterprise,€ 6520
+C-0000030,Yuki,Müller,yuki.mller30@mail.test,2021-08-06,GB,free,0
+C-0000031,Ahmed,Weber,ahmed.weber31@example.com,2020-04-28,United States,pro,80
+C-0000032,Hana,Müller,hana.mller32@mail.test,2022-05-13,Netherlands,enterprise,2403
+C-0000033,Omar,Petrov,lena.garca141@example.com,2021-04-01,Nederland,enterprise,4272
+C-0000034,Yuki,Novak,yuki.novak34@example.com,25 Nov 2021,ES,enterprise,2329
+C-0000035,Mateo,García,mateo.garca35@mail.test,2023-12-15,The Netherlands,pro,87
+C-0000036,Chloe,Lindqvist,chloe.lindqvist36@corp.example,2020-08-14,DE,enterprise,3798
+C-0000037,Ahmed,Haddad,ahmed.haddad37@mail.test,2024-06-10,US,pro,26
+C-0000038,Leon,Haddad,leon.haddad38@example.com,2020-12-13,Germany,free,0
+C-0000039,Anna,O'Brien,anna.obrien39@example.com,2025-03-20,ES,pro,21
+C-0000040,Tomas,Dubois,tomas.dubois40@example.com,2019-11-07,gb,free,0
+C-0000041,Jonas,Schmidt,jonas.schmidt41@example.com,2021-04-02,USA,free,0
+C-0000042,Chloe,Jensen,chloe.jensen42@mail.test,2023-08-16,NL,enterprise,6320
+C-0000043,Lena,O'Brien,lena.obrien43@mail.test,2020-12-26,PL,pro,136
+C-0000044,Karim,Lindqvist,karim.lindqvist44@example.com,2020-05-08,Spain,pro,163
+C-0000045,Anna,Weber,anna.weber45@example.com,2024-08-14,IT,enterprise,1261
+C-0000046,Omar,Moreau,omar.moreau46@example.com,2023-07-11,ES,free,0
+C-0000047,Leon,Schmidt,leon.schmidt47@mail.test,2024-05-08,DE,enterprise,1930
+C-0000048,Ahmed,"Smith, Jr.",ahmed.smithjr.48@corp.example,2024-02-25,ES,pro,134
+C-0000049,Tomas,Dubois,tomas.dubois49@example.com,2020-02-25,GB,pro,175
+C-0000050,Leon,Moreau,leon.moreau50@mail.test,2023-05-14,FR,free,0
+C-0000051,Mateo,Costa,mateo.costa51@example.com,2019-10-14,Polska,free,0
+C-0000052,Yuki,Haddad,yuki.haddad52@mail.test,2021-08-21,GB,free,0
+C-0000053,Hana,Tanaka,hana.tanaka53@corp.example,2024-01-09,U.S.,pro,54
+C-0000054,Yuki,Moreau,yuki.moreau54@corp.example,2023-03-22,pl,enterprise,7803
+C-0000055,Anna,Rossi,anna.rossi55@example.com,2024-09-21,United States,free,0
+C-0000056,Leon,Silva,leon.silva56@example.com,2024-01-02,US,pro,167
+C-0000057,Jonas,Rossi,jonas.rossi57@mail.test,2020-04-20,GB,free,0
+C-0000058,Mateo,Moreau,mateo.moreau58@mail.test,2022-06-02,Deutschland,pro,40
+C-0000059,Ahmed,Rossi,ahmed.rossi59@example.com,2022-08-10,IT,pro,185
+C-0000060,Omar,Novak,omar.novak60@mail.test,2024-08-13,FR,pro,43
+C-0000061,Omar,Rossi,omar.rossi61@example.com,2025-10-23,GB,pro,92
+C-0000062,Noah,García,noah.garca62@example.com,2025-03-03,United States,pro,71
+C-0000063,Lena,Novak,lena.novak63@corp.example,2022-03-22,GB,enterprise,3363
+C-0000064,Yuki,Lindqvist,yuki.lindqvist64@mail.test,2019-09-27,PL,free,0
+C-0000065,Mateo,O'Brien,mateo.obrien65@example.com,13 Feb 2019,US,free,0
+C-0000066,Lena,Schmidt,lena.schmidt66@example.com,2020-09-06,U.S.,pro,95
+C-0000067,Priya,Lindqvist,priya.lindqvist67@mail.test,2019-10-15,US,enterprise,3570
+C-0000068,Elena,Weber,elena.weber68@corp.example,16 Dec 2025,España,enterprise,1970
+C-0000069,Leon,García,leon.garca69@corp.example,,NL,free,0
+C-0000070,Mia,Tanaka,mia.tanaka70@example.com,2024-10-15,France,pro,138
+C-0000071,Sofia,Haddad,sofia.haddad71@corp.example,2021-04-06,FRANCE,free,0
+C-0000072,Hana,Schmidt,hana.schmidt72@mail.test,2019-11-15,FR,free,0
+C-0000073,Elena,Costa,elena.costa73@example.com,2022-05-04,DE,enterprise,6400
+C-0000074,Yuki,Weber,yuki.weber74@corp.example,2024-02-28,DE,pro,144
+C-0000075,Chloe,Müller,chloe.mller75@corp.example,2019-11-10,GB,free,0
+C-0000076,Elena,Lindqvist,elena.lindqvist76@mail.test,2025-01-21,US,enterprise,8806
+C-0000077,Chloe,Costa,chloe.costa77@example.com,2019-12-02,PL,pro,49
+C-0000078,Emma,Novak,emma.novak78@example.com,2025-10-07,NL,enterprise,6198
+C-0000079,Omar,Costa,omar.costa79@mail.test,2024-03-20,GB,enterprise,4203
+C-0000080,Priya,García,priya.garca80@corp.example,2023-01-08,The Netherlands,free,0
+C-0000081,Luca,Rossi,luca.rossi81@example.com,2024-02-23,GB,free,0
+C-0000082,Lena,O'Brien,lena.obrien82@mail.test,2025-11-02,IT,pro,93
+C-0000083,Karim,Silva,karim.silva83@mail.test,2023-12-12,ES,pro,80
+C-0000084,Jonas,Kowalski,jonas.kowalski84@corp.example,2021-04-25,GB,enterprise,2666
+C-0000085,Jonas,Weber,jonas.weber85@example.com,2023-01-27,United Kingdom,pro,39
+C-0000086,Luca,García,luca.garca86@example.com,2020-10-02,United States,free,0
+C-0000087,Omar,Kowalski,omar.kowalski87@mail.test,2020-02-09,IT,free,0
+C-0000088,Emma,Rossi,emma.rossi88@corp.example,2023-07-08,España,pro,172
+C-0000089,Jonas,Silva,jonas.silva89@example.com,2024-08-28,DE,pro,40
+C-0000090,Jonas,Tanaka,karim.silva83@mail.test,2025-05-06,GB,free,0
+C-0000091,Emma,"Smith, Jr.",emma.smithjr.91@example.com,2025-02-30,US,pro,169
+C-0000092,Sofia,Novak,sofia.novak92@example.com,2022-06-05,Deutschland,free,0
+C-0000093,Mateo,Schmidt,mateo.schmidt93@mail.test,2025-12-16,NL,enterprise,3184
+C-0000094,Yuki,Dubois,yuki.dubois94@mail.test,14 Jun 2023,DE,pro,154
+C-0000095,Hana,"Smith, Jr.",hana.smithjr.95@mail.test,2019-02-01,FRANCE,pro,142
+C-0000096,Ines,Khan,ines.khan96@corp.example,,ES,enterprise,615
+C-0000097,Jonas,Nguyen,jonas.nguyen97@example.com,2023-08-05,PL,enterprise,3041
+C-0000098,Sofia,Schmidt,sofia.schmidt98@corp.example,2019-04-06,US,free,0
+C-0000099,Anna,Petrov,anna.petrov99@mail.test,16/11/2025,NL,pro,116
+C-0000100,Ahmed,Nguyen,ahmed.nguyen100@example.com,2023-11-14,Italia,enterprise,4456
+C-0000101,Emma,Schmidt,emma.schmidt101@mail.test,2020-02-21,FR,enterprise,5690
+C-0000102,Ines,O'Brien,ines.obrien102@corp.example,2019-04-17,DE,pro,95
+C-0000103,Tomas,Moreau,tomas.moreau103@example.com,2020-05-06,NL,enterprise,613
+C-0000104,Mateo,Jensen,mateo.jensen104@example.com,2020-03-24,IT,free,0
+C-0000105,Yuki,Jensen,yuki.jensen105@corp.example,2025-10-28,PL,enterprise,7870
+C-0000106,Mateo,García,mateo.garca106@corp.example,2023-09-26,GB,enterprise,3030
+C-0000107,Sofia,Costa,sofia.costa107@mail.test,2023-01-19,es,free,0
+C-0000108,Ines,Moreau,ines.moreau108@corp.example,2023-08-12,PL,pro,165
+C-0000109,Tomas,Weber,tomas.weber109@mail.test,2019-05-05,PL,free,0
+C-0000110,Lena,"Smith, Jr.",lena.smithjr.110@example.com,2024-05-20,USA,free,0
+C-0000111,Hana,Costa,hana.costa111@corp.example,14 Nov 2023,NL,free,0
+C-0000112,Mia,Silva,mia.silva112@example.com,2020-02-30,GB,enterprise,6223
+C-0000113,Chloe,Weber,chloe.weber113@example.com,2020-07-04,Deutschland,free,0
+C-0000114,Emma,Novak,emma.novak114@example.com,2021-10-17,ES,pro,70
+C-0000115,Luca,Dubois,luca.dubois115@corp.example,17 Mar 2024,PL,enterprise,8076
+C-0000116,Jonas,Tanaka,jonas.tanaka116@mail.test,2023-02-11,The Netherlands,enterprise,1223
+C-0000117,Luca,Schmidt,luca.schmidt117@corp.example,2022-10-02,ES,enterprise,3535
+C-0000118,Yuki,Schmidt,yuki.schmidt118@corp.example,2022-03-23,PL,free,0
+C-0000119,Ines,Moreau,ines.moreau119@corp.example,2020-05-09,FR,pro,113
+C-0000120,Omar,Jensen,omar.jensen120@@example.com,2019-07-22,US,free,0
+C-0000121,Karim,Novak,karim.novak121@mail.test,2025-04-12,United States,enterprise,5423
+C-0000122,Jonas,Novak,jonas.novak122@corp.example,2023-01-07,PL,pro,129
+C-0000123,Jonas,Haddad,jonas.haddad123@corp.example,2023-10-03,ES,enterprise,4003
+C-0000124,Hana,Schmidt,hana.schmidt124@example.com,2019-06-15,FR,enterprise,8178
+C-0000125,Noah,García,noah.garca125@corp.example,2025-02-09,ES,enterprise,n/a
+C-0000126,Noah,Silva,noah.silva126@example.com,2019-02-18,ES,enterprise,2048
+C-0000127,Elena,Nguyen,elena.nguyen127@example.com,2025-02-10,IT,enterprise,8405
+C-0000128,Elena,Lindqvist,elena.lindqvist128@mail.test,2025-03-28,germany ,enterprise,5200
+C-0000129,Yuki,Schmidt,yuki.schmidt129@example.com,2024-12-28,Germany,free,0
+C-0000130,Emma,Costa,emma.costa130@mail.test,2020-01-18,PL,enterprise,8876
+C-0000131,Sofia,Khan,sofia.khan131@corp.example,2024-12-13,Netherlands,enterprise,8810
+C-0000132,Elena,Moreau,elena.moreau132@mail.test,2020-01-19,Italia,pro,170
+C-0000133,Karim,Silva,karim.silva133@example.com,2024-03-14,gb,free,0
+C-0000134,Tomas,Müller,tomas.mller134@example.com,2021-04-13,NL,pro,-79
+C-0000135,Omar,Nguyen,omar.nguyen135@example.com,2022-06-23,GB,free,0
+C-0000136,Karim,Rossi,karim.rossi136@example.com,2022-11-17,DE,enterprise,3646
+C-0000137,Sofia,Lindqvist,sofia.lindqvist137@corp.example,2022-05-08,UK,enterprise,4772
+C-0000138,Omar,Jensen,omar.jensen138@mail.test,2019-10-10,PL,pro,88
+C-0000139,Priya,Lindqvist,priya.lindqvist139@mail.test,2024-01-18,United Kingdom,pro,76
+C-0000140,Priya,Tanaka,priya.tanaka140@corp.example,2020-08-06,IT,pro,103
+C-0000141,Lena,García,lena.garca141@example.com,2020-07-28,germany ,enterprise,1733
+C-0000142,Hana,Weber,hana.weber142@example.com,2023-12-19,it,enterprise,1183
+C-0000143,Jonas,O'Brien,jonas.obrien143@example.com,2020-06-22,Nederland,pro,59
+C-0000144,Chloe,Kowalski,chloe.kowalski144@mail.test,2023-12-24,IT,enterprise,8594
+C-0000145,Mateo,"Smith, Jr.",mateo.smithjr.145@corp.example,2020-03-02,PL,pro,92
+C-0000146,Emma,Moreau,emma.moreau146@corp.example,2023-12-19,Poland,free,0
+C-0000147,Yuki,Kowalski,yuki.kowalski147@corp.example,2023-12-03,FR,free,0
+C-0000148,Elena,Khan,elena.khan148@corp.example,2024-03-12,NL,pro,135
+C-0000149,Chloe,Dubois,chloe.dubois149@example.com,2022-04-04,FR,free,0
+C-0000150,Yuki,Silva,yuki.silva150@corp.example,2023-10-10,Germany,free,0
+C-0000151,Elena,Novak,elena.novak151@example.com,2021-01-21,Nederland,pro,132
+C-0000152,Emma,Müller,emma.mller152@corp.example,2 May 2023,DE,enterprise,8474
+C-0000153,Lena,Müller,lena.mller153@corp.example,2024-02-18,IT,enterprise,7695
+C-0000154,Noah,Haddad,noah.haddad154@example.com,2019-06-24,Netherlands,free,0
+C-0000155,Tomas,Weber,tomas.weber155@corp.example,2019-04-28,GB,pro,95
+C-0000156,Mia,Tanaka,mia.tanaka156@mail.test,2019-08-16,Deutschland,pro,139
+C-0000157,Chloe,Haddad,chloe.haddad157@example.com,2024-05-07,US,free,0
+C-0000158,Yuki,Weber,yuki.weber158@mail.test,2022-09-03,NL,pro,23
+C-0000159,Anna,Lindqvist,anna.lindqvist159@mail.test,2021-09-01,United States,enterprise,8023
+C-0000160,Leon,Nguyen,leon.nguyen160@example.com,2021-01-23,ES,enterprise,8001
+C-0000161,Chloe,Nguyen,chloe.nguyen161@corp.example,2021-12-14,Italy,pro,126
+C-0000162,Noah,Costa,noah.costa162@corp.example,2021-03-15,DE,free,0
+C-0000163,Tomas,Dubois,tomas.dubois163@example.com,2025-03-14,GB,pro,111
+C-0000164,Priya,Tanaka,priya.tanaka164@example.com,2025-07-05,NL,free,0
+C-0000165,Priya,Costa,priya.costa165@mail.test,19/01/2019,Germany,free,0
+C-0000166,Elena,Rossi,elena.rossi166@corp.example,2021-01-03,US,free,0
+C-0000167,Anna,Dubois,anna.dubois167@example.com,22/07/2025,pl,enterprise,4396
+C-0000168,Anna,Schmidt,anna.schmidt168@corp.example,2020-07-21,Polska,enterprise,608
+C-0000169,Ahmed,Kowalski,ahmed.kowalski169@example.com,2022-12-05,DE,free,0
+C-0000170,Chloe,Lindqvist,chloe.lindqvist170@corp.example,2022-08-20,ES,pro,45
+C-0000171,Karim,Jensen,karim.jensen171@mail.test,2022-02-16,US,free,0
+C-0000172,Luca,Novak,luca.novak172@example.com,2024-11-01,FR,enterprise,617
+C-0000173,Luca,Weber,luca.weber173@corp.example,2019-02-22,GB,pro,176
+C-0000174,Omar,Kowalski,omar.kowalski174@example.com,2021-10-20,France,enterprise,8556
+C-0000175,Karim,Petrov,karim.petrov175@corp.example,2022-02-28,FRANCE,free,0
+C-0000176,Karim,Tanaka,karim.tanaka176@example.com,2023-03-11,IT,enterprise,4062
+C-0000177,Leon,Moreau,leon.moreau177@corp.example,27/08/2022,IT,free,0
+C-0000178,Jonas,Nguyen,jonas.nguyen178@corp.example,2020-03-13,Spain,pro,35
+C-0000179,Mateo,Nguyen,mateo.nguyen179@corp.example,2019-07-05,es,pro,136
+C-0000180,Karim,Haddad,karim.haddad180@mail.test,2023-03-18,Spain,free,0
+C-0000181,Chloe,Costa,chloe.costa181@corp.example,2022-01-25,US,free,0
+C-0000182,Priya,Dubois,priya.dubois182@corp.example,2024-12-08,FR,enterprise,4424
+C-0000183,Mateo,Novak,mateo.novak183@corp.example,2020-06-13,FR,free,0
+C-0000184,Yuki,Haddad,yuki.haddad184@corp.example,2021-03-19,US,pro,156
+C-0000185,Luca,"Smith, Jr.",luca.smithjr.185@mail.test,2023-05-06,FR,enterprise,5321
+C-0000186,Chloe,Tanaka,chloe.tanaka186@mail.test,2022-02-05,US,free,0
+C-0000187,Elena,Jensen,elena.jensen187@example.com,2019-04-18,U.S.,free,0
+C-0000188,Lena,Dubois,lena.dubois188@corp.example,2022-05-14,ES,pro,86
+C-0000189,Emma,Müller,emma.mller189@example.com,2024-02-09,US,free,0
+C-0000190,Hana,Rossi,hana.rossi190@example.com,2019-07-19,PL,free,0
+C-0000191,Jonas,Khan,jonas.khan191@example.com,2024-02-24,pl,enterprise,3463
+C-0000192,Emma,Schmidt,emma.schmidt192@example.com,2023-09-18,es,enterprise,6346
+C-0000193,Lena,Müller,lena.mller193@example.com,2025-11-17,ES,enterprise,7523
+C-0000194,Emma,Moreau,emma.moreau194@mail.test,2025-07-16,FR,pro,111
+C-0000195,Leon,Dubois,leon.dubois195@mail.test,2024-03-12,FRANCE,pro,117
+C-0000196,Luca,Haddad,luca.haddad196@corp.example,2025-08-14,ES,enterprise,1540
+C-0000197,Lena,Müller,lena.mller197@corp.example,2021-11-14,Polska,enterprise,8781
+C-0000198,Ahmed,Khan,ahmed.khan198@example.com,2022-08-17,US,enterprise,2372
+C-0000199,Priya,O'Brien,priya.obrien199@corp.example,2024-08-10,DE,pro,185
+C-0000200,Luca,Silva,luca.silva200@corp.example,2023-07-27,IT,enterprise,"8,820.50"
