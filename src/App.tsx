@@ -4,6 +4,8 @@ import { useStoreVersion } from './store/useStore'
 import { fetchCsv } from './store/fetchCsv'
 import { FilePicker } from './ui/FilePicker'
 import { LoadingBar } from './ui/LoadingBar'
+import { Toolbar } from './ui/Toolbar'
+import { Grid } from './ui/Grid'
 
 export default function App() {
   useStoreVersion()
@@ -30,7 +32,8 @@ export default function App() {
           {elapsed !== null && <span className="hint">in {elapsed.toFixed(1)} s</span>}
         </div>
       )}
-      {/* Grid arrives in task 1.4 */}
+      <Toolbar />
+      <Grid />
     </div>
   )
 }
