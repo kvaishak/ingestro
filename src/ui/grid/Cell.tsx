@@ -1,7 +1,7 @@
 import { COLUMNS } from '../../validation/columns'
 import { issueFor, suggestionFor } from '../../validation/catalog'
 import { store } from '../../store/store'
-import { originalValue } from '../../store/changes'
+import { isChanged, originalValue } from '../../store/changes'
 import { session } from '../session'
 import { CellEditor } from './CellEditor'
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 /**
- * One cell. Reads its value, issue code and changed mark straight from the store.
+ * One cell. Reads its value and issue code from the store, and whether the user changed it from store/changes.ts.
  * With an issue: red, issue title on hover. With an issue the tool has a suggestion for: amber,
  * the suggestion shown inline. Changed by the user: green tint, original on hover.
  * While being edited: the inline editor instead of the value.
@@ -30,7 +30,7 @@ export function Cell({ row, col }: Props) {
   const code = store.flags[col][row]
   const issue = issueFor(COLUMNS[col], code)
   const suggestion = issue ? suggestionFor(COLUMNS[col], code, value) : undefined
-  const wasChanged = store.changed[col][row] === 1
+  const wasChanged = isChanged(row, col)
 
   const classes = ['cell']
   if (issue) classes.push(suggestion !== undefined ? 'suggestion' : 'issue')

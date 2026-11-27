@@ -29,7 +29,11 @@ export interface ChangeEntry {
 
 export const history: { undo: ChangeEntry[] } = { undo: [] }
 
-/** The value each changed cell had when the file was loaded, keyed by cell. */
+/**
+ * The value each changed cell had when the file was loaded, keyed by cell.
+ * This is the only record of what the user changed: isChanged, originalValue, hasChanges and
+ * revertAllChanges all read from it.
+ */
 const originals = new Map<number, string>()
 const cellKey = (row: number, col: number) => row * COLUMNS.length + col
 const cellFromKey = (key: number) => ({ row: Math.floor(key / COLUMNS.length), col: key % COLUMNS.length })
@@ -57,15 +61,22 @@ export function editCell(row: number, col: number, value: string): ChangeEntry {
   return applyChange(`${COLUMNS[col]} for ${customerIdOf(row)}`, [{ row, col, newValue: value }])
 }
 
+/** Does this cell differ from the value it had in the file? Editing it back by hand makes it false again. */
+export function isChanged(row: number, col: number): boolean {
+  const original = originals.get(cellKey(row, col))
+  if (original === undefined) return false
+  return store.rows[row][col] !== original
+}
+
 export function originalValue(row: number, col: number): string | undefined {
   return originals.get(cellKey(row, col))
 }
 
 /** Does any cell currently differ from the value that was loaded? Stops at the first one. */
 export function hasChanges(): boolean {
-  for (const [key, original] of originals) {
+  for (const key of originals.keys()) {
     const { row, col } = cellFromKey(key)
-    if (store.rows[row][col] !== original) return true
+    if (isChanged(row, col)) return true
   }
   return false
 }
@@ -78,7 +89,7 @@ export function revertAllChanges(): ChangeEntry | undefined {
   const cells: { row: number; col: number; newValue: string }[] = []
   for (const [key, original] of originals) {
     const { row, col } = cellFromKey(key)
-    if (store.rows[row][col] !== original) cells.push({ row, col, newValue: original })
+    if (isChanged(row, col)) cells.push({ row, col, newValue: original })
   }
   if (cells.length === 0) return undefined
   return applyChange(`Reverted ${formatCount(cells.length)} changes`, cells)
@@ -101,7 +112,6 @@ function writeCells(writes: CellWrite[]): void {
   for (const w of writes) {
     rememberOriginal(w.row, w.col)
     store.rows[w.row][w.col] = w.value
-    store.changed[w.col][w.row] = w.value !== originals.get(cellKey(w.row, w.col)) ? 1 : 0
   }
   revalidate(writes)
   recount()

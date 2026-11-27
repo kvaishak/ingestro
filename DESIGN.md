@@ -14,7 +14,7 @@ Three ideas carry the design. Each one answers a question a reviewer would ask.
 *Why:* React is not great at handling 200K+ objects for rendering, so the data is stored outside React.
 - A row never moves (row indices do not change).
 - One byte per cell for issue codes: "which problem does this cell have".
-- One byte per cell for changed marks: "did the user change it".
+- What the user changed is kept once, next to the undo history: the value each changed cell had in the file. "Did the user change this cell?" is answered from that.
 - View positions: a list of row indices produced by filter, search and sort. The grid reads through this list for rendering.
 - React only watches a version counter from the store and repaints what is on the screen.
 
@@ -37,6 +37,46 @@ Three ideas carry the design. Each one answers a question a reviewer would ask.
 - Undo pops the newest entry and pushes the old values back through the same door.
 
 *How it helps:* the user can try anything. A change to 67,000 cells is one click to undo, counts and colours always match the data because they are recomputed on the same path, and there is no second mechanism to keep in sync.
+
+## Data
+
+Everything the app keeps, how big it gets, and who writes it. "N" is the number of rows in the file (200,000 here); there are always 8 columns.
+
+### Grows with the file
+
+| What | Shape | Size at 200k rows | Written by | Read by |
+|---|---|---|---|---|
+| **Rows** `store.rows` | One array of 8 strings per row, in file order. Never reordered. | The biggest item: 1.6 million strings | Loading (append only), then `applyChange` | Grid, search, sort, checks |
+| **Issue codes** `store.flags` | 8 byte arrays, one per column. `flags[column][row]` is the problem code, 0 = fine. | 8 × 256 KB = 2 MB | The worker while loading, then `applyChange` | Grid colours, counts, problem filter |
+| **View** `store.view` | A list of row numbers, in the order the grid shows them. | Up to 200k × 4 bytes = 800 KB | `buildView` after every filter, search, sort or change | Grid |
+
+The issue-code arrays start with room for 65,536 rows and double when a batch does not fit, so at 200k rows each column holds 262,144 bytes. In the benchmark (PERFORMANCE.md) a virtualized page holding the rows used about 0.26 KB of JavaScript memory per row, about 130 MB at 500,000 rows.
+
+### Grows with what the user changes
+
+| What | Shape | Grows by | Lives in |
+|---|---|---|---|
+| **Undo history** `history.undo` | One entry per user action: a label and a list of `{ row, col, oldValue, newValue }` | One item per changed cell: a typed edit adds 1, the country bulk fix adds 67,366, "Revert all" adds every changed cell | `store/changes.ts` |
+| **Values from the file** `originals` | Map from cell (`row × 8 + col`) to the value the file had. The only record of what changed: it drives the green cells (`isChanged`), "was:" on hover and "Revert all". | One entry per cell ever changed; never removed until a new file loads | `store/changes.ts` |
+| **Pinned rows** | Set of row numbers edited while a problem filter is on, so they stay in view | One per edited row; cleared when the filter changes | `store/query.ts` |
+
+### Small or temporary
+
+- **Counts** `store.counts`: one number per problem type (18 at most), plus `problemCells` and `problemRows`. Rebuilt in one pass after every change.
+- **Suggestions**: for the selected problem, the rows the tool can fix and the spellings it cannot. Worked out when the panel asks, and remembered only until the next change.
+- **Bulk plan**: the "USA → US, 2,895 rows" groups for the preview. Built when the preview opens; becomes one undo entry when applied.
+- **Session** (`ui/session.ts`): the cell being edited, the toast and what the panel shows.
+
+### Inside the worker, while loading
+
+- Each 1 MB chunk becomes a batch of rows plus 8 byte arrays of issue codes. The byte arrays are handed to the main thread, not copied.
+- For the duplicate check the worker keeps the email and customer ID columns (2 × N strings) until parsing ends, then sends back only the row numbers that repeat. The worker is closed when loading finishes, so this memory goes away.
+
+### How it scales
+
+- **Rows** are the only large cost, and they grow with the file. Everything indexed by row (issue codes, view) is a typed array of 1 to 4 bytes per row or cell.
+- **Undo history and the file values** grow with the number of changed cells, not with the file. A file with no edits costs nothing here; one bulk fix on 67k cells costs 67k small entries.
+- **Every pass walks all N rows once:** search, filter, counts and the duplicate re-check (sort is N log N). That is why they stay under 100 ms at 200k rows, and why work would move to a server beyond about 500k rows (see Performance).
 
 ## ADR: where parsing and validation run
 

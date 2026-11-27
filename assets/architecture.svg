@@ -41,7 +41,7 @@
   <text x="615" y="68" text-anchor="middle" class="title">Store (main thread)</text>
   <text x="615" y="90" text-anchor="middle" class="line">rows, 8 strings each</text>
   <text x="615" y="108" text-anchor="middle" class="line">1 byte per cell: issue code</text>
-  <text x="615" y="126" text-anchor="middle" class="line">1 byte per cell: changed by user</text>
+  <text x="615" y="126" text-anchor="middle" class="line">counts per problem type</text>
   <text x="615" y="148" text-anchor="middle" class="small">plain arrays, outside React</text>
 
   <path d="M730,104 L806,104" class="arrow"/>
