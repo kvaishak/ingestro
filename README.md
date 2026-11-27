@@ -62,14 +62,3 @@ npm run preview   # serve the production build on http://localhost:4173
 Inside `src/ui/`: `loading/`, `panel/` (left side), `toolbar/`, `grid/`, `common/` (dialog, toast) and `hooks/`.
 `App.tsx` puts the screen together. Tests sit next to the code they cover (`*.test.ts`).
 
-## Where do I start?
-
-| I want to… | Look in |
-|---|---|
-| change what counts as a problem, or its wording | `validation/catalog.ts` (wording) and `validation/rules.ts` (the check) |
-| change how a value is written, undone or reverted | `store/changes.ts` (`applyChange` is the only function that writes a value) |
-| change which rows the grid shows | `store/query.ts` (`buildView`) |
-| change what a button does | `ui/actions.ts`, then the component that calls it |
-| change how the file is read | `store/load.ts` and `worker/parse.worker.ts` |
-
-**One rule:** components read the data, and change it only through `ui/actions.ts`. Loading a file (`store/load.ts`) and opening the cell editor or closing the toast (`ui/session.ts`) are the only exceptions.

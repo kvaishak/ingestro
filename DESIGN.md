@@ -60,23 +60,6 @@ The issue-code arrays start with room for 65,536 rows and double when a batch do
 | **Values from the file** `originals` | Map from cell (`row × 8 + col`) to the value the file had. The only record of what changed: it drives the green cells (`isChanged`), "was:" on hover and "Revert all". | One entry per cell ever changed; never removed until a new file loads | `store/changes.ts` |
 | **Pinned rows** | Set of row numbers edited while a problem filter is on, so they stay in view | One per edited row; cleared when the filter changes | `store/query.ts` |
 
-### Small or temporary
-
-- **Counts** `store.counts`: one number per problem type (18 at most), plus `problemCells` and `problemRows`. Rebuilt in one pass after every change.
-- **Suggestions**: for the selected problem, the rows the tool can fix and the spellings it cannot. Worked out when the panel asks, and remembered only until the next change.
-- **Bulk plan**: the "USA → US, 2,895 rows" groups for the preview. Built when the preview opens; becomes one undo entry when applied.
-- **Session** (`ui/session.ts`): the cell being edited, the toast and what the panel shows.
-
-### Inside the worker, while loading
-
-- Each 1 MB chunk becomes a batch of rows plus 8 byte arrays of issue codes. The byte arrays are handed to the main thread, not copied.
-- For the duplicate check the worker keeps the email and customer ID columns (2 × N strings) until parsing ends, then sends back only the row numbers that repeat. The worker is closed when loading finishes, so this memory goes away.
-
-### How it scales
-
-- **Rows** are the only large cost, and they grow with the file. Everything indexed by row (issue codes, view) is a typed array of 1 to 4 bytes per row or cell.
-- **Undo history and the file values** grow with the number of changed cells, not with the file. A file with no edits costs nothing here; one bulk fix on 67k cells costs 67k small entries.
-- **Every pass walks all N rows once:** search, filter, counts and the duplicate re-check (sort is N log N). That is why they stay under 100 ms at 200k rows, and why work would move to a server beyond about 500k rows (see Performance).
 
 ## ADR: where parsing and validation run
 
