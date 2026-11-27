@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { COLUMNS, COLUMN_LABEL, type Column } from '../validation/columns'
 import { query, setQuery } from '../store/query'
+import { setPanelMode } from './session'
 import { store } from '../store/store'
 import { useStoreVersion } from '../store/useStore'
 import { Cell } from './Cell'
@@ -66,6 +67,14 @@ export function Grid() {
           )
         })}
       </div>
+      {count === 0 && ready && (
+        <div className="grid-empty" data-testid="grid-empty">
+          <p>No rows match this view.</p>
+          {query.issueKey && (
+            <button className="btn" onClick={() => { setPanelMode('detail'); setQuery({ issueKey: null }) }}>Show all rows</button>
+          )}
+        </div>
+      )}
       <div className="grid-body" style={{ height: virtualizer.getTotalSize() }}>
         {virtualizer.getVirtualItems().map((item) => {
           const row = store.view[item.index]

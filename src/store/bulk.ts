@@ -53,5 +53,5 @@ export function applyBulk(plan: BulkPlan): ChangeEntry | undefined {
   if (plan.total === 0) return undefined
   const col = columnIndex(plan.column)
   const cells = plan.groups.flatMap((group) => group.rows.map((row) => ({ row, col, newValue: group.to })))
-  return applyChange(`${issueByKey(plan.issueKey).title}: ${plan.total} values`, cells)
+  return applyChange(`${issueByKey(plan.issueKey).title}: ${plan.total.toLocaleString('en-US')} values`, cells)
 }

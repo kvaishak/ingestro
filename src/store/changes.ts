@@ -31,6 +31,7 @@ export const history: { undo: ChangeEntry[] } = { undo: [] }
 /** The value each changed cell had when the file was loaded, keyed by cell. */
 const originals = new Map<number, string>()
 const cellKey = (row: number, col: number) => row * COLUMNS.length + col
+const cellFromKey = (key: number) => ({ row: Math.floor(key / COLUMNS.length), col: key % COLUMNS.length })
 
 const EMAIL = columnIndex('email')
 const CUSTOMER_ID = columnIndex('customer_id')
@@ -60,6 +61,29 @@ export function editCell(row: number, col: number, value: string): ChangeEntry {
 
 export function originalValue(row: number, col: number): string | undefined {
   return originals.get(cellKey(row, col))
+}
+
+/** Does any cell currently differ from the value that was loaded? Stops at the first one. */
+export function hasChanges(): boolean {
+  for (const [key, original] of originals) {
+    const { row, col } = cellFromKey(key)
+    if (store.rows[row][col] !== original) return true
+  }
+  return false
+}
+
+/**
+ * Put every changed cell back to its loaded value, as ONE change: one housekeeping pass instead of
+ * one per history entry, and the revert itself can be undone. Cells edited back by hand are skipped.
+ */
+export function revertAllChanges(): ChangeEntry | undefined {
+  const cells: { row: number; col: number; newValue: string }[] = []
+  for (const [key, original] of originals) {
+    const { row, col } = cellFromKey(key)
+    if (store.rows[row][col] !== original) cells.push({ row, col, newValue: original })
+  }
+  if (cells.length === 0) return undefined
+  return applyChange(`Reverted ${cells.length.toLocaleString('en-US')} changes`, cells)
 }
 
 export function resetHistory(): void {

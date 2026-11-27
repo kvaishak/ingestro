@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { hasChanges } from '../store/changes'
+import { revertEverything } from './actions'
+import { ConfirmDialog } from './ConfirmDialog'
 import { store } from '../store/store'
 import { query, setQuery } from '../store/query'
 import { issueByKey } from '../validation/catalog'
+import { setPanelMode } from './session'
 
 const DEBOUNCE_MS = 200
 
@@ -36,6 +40,8 @@ export function Toolbar() {
     ? `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} rows`
     : `${total.toLocaleString('en-US')} rows`
   const activeIssue = query.issueKey ? issueByKey(query.issueKey) : null
+  const canRevert = hasChanges()
+  const [confirmingRevert, setConfirmingRevert] = useState(false)
 
   return (
     <div className="toolbar">
@@ -51,11 +57,26 @@ export function Toolbar() {
       {activeIssue && (
         <span className="chip" data-testid="filterchip">
           Showing: {activeIssue.title}
-          <button onClick={() => setQuery({ issueKey: null })} title="Show all rows" aria-label="Show all rows">✕</button>
+          <button onClick={() => { setPanelMode('detail'); setQuery({ issueKey: null }) }} title="Show all rows" aria-label="Show all rows">✕</button>
         </span>
       )}
       <span className="spacer" />
       <span className="hint" data-testid="rowcount">{count}</span>
+      {canRevert && (
+        <button className="btn" onClick={() => setConfirmingRevert(true)} data-testid="revert-all">
+          Revert all changes
+        </button>
+      )}
+      {confirmingRevert && (
+        <ConfirmDialog
+          testId="confirm-revert"
+          title="Revert all changes?"
+          body="Every value you changed goes back to what was in the file. You can undo this afterwards."
+          confirmLabel="Yes, revert everything"
+          onCancel={() => setConfirmingRevert(false)}
+          onConfirm={() => { setConfirmingRevert(false); revertEverything() }}
+        />
+      )}
       <button className="btn primary" disabled title="Available once every problem is resolved">
         Import
       </button>

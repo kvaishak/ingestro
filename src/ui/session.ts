@@ -15,9 +15,24 @@ export interface Toast {
   canUndo: boolean
 }
 
+/** What the left panel shows for the selected problem: its detail, the bulk preview, or the result of a bulk apply. */
+export type PanelMode = 'detail' | 'preview' | 'applied'
+
+export interface BulkResult {
+  changed: number
+}
+
 export const session = {
   editing: null as EditingCell | null,
   toast: null as Toast | null,
+  panelMode: 'detail' as PanelMode,
+  lastBulk: null as BulkResult | null,
+}
+
+export function setPanelMode(mode: PanelMode, result: BulkResult | null = null): void {
+  session.panelMode = mode
+  session.lastBulk = result
+  bump()
 }
 
 let toastTimer: number | null = null

@@ -90,3 +90,42 @@ test('every change bumps the version once', () => {
   undo()
   expect(store.version).toBe(v + 2)
 })
+
+// ---- revert everything ----
+import { revertAllChanges } from './changes'
+
+test('revertAllChanges restores every changed cell to its loaded value in one undoable change', () => {
+  seed([r('a@b.co', 'Germany'), r('b@b.co', 'France'), r('c@b.co', 'DE')])
+  applyChange('countries', [{ row: 0, col: COUNTRY, newValue: 'DE' }, { row: 1, col: COUNTRY, newValue: 'FR' }])
+  editCell(0, EMAIL, 'x@b.co')
+  editCell(0, EMAIL, 'y@b.co')
+  const before = history.undo.length
+
+  const entry = revertAllChanges()
+
+  expect(entry?.cells).toHaveLength(3) // three distinct cells were changed
+  expect(store.rows[0][COUNTRY]).toBe('Germany')
+  expect(store.rows[1][COUNTRY]).toBe('France')
+  expect(store.rows[0][EMAIL]).toBe('a@b.co')
+  expect(store.changed[COUNTRY][0]).toBe(0)
+  expect(store.changed[EMAIL][0]).toBe(0)
+  expect(store.counts.get('country.invalid')).toBe(2)
+  expect(history.undo).toHaveLength(before + 1)
+
+  undo() // the revert itself can be undone
+  expect(store.rows[0][COUNTRY]).toBe('DE')
+  expect(store.rows[0][EMAIL]).toBe('y@b.co')
+})
+
+test('revertAllChanges with nothing changed does nothing', () => {
+  seed([r('a@b.co')])
+  expect(revertAllChanges()).toBeUndefined()
+  expect(history.undo).toHaveLength(0)
+})
+
+test('revertAllChanges skips cells that were edited back to their original by hand', () => {
+  seed([r('a@b.co')])
+  editCell(0, EMAIL, 'x@b.co')
+  editCell(0, EMAIL, 'a@b.co')
+  expect(revertAllChanges()).toBeUndefined()
+})
