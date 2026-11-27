@@ -4,7 +4,7 @@ import { codeOf } from '../validation/catalog'
 import { store } from './store'
 import { setQuery } from './query'
 import { applyChange, editCell, undo, history, originalValue } from './changes'
-import { r, seed } from './testUtils'
+import { customerRow, seedStore } from '../test/fixtures'
 
 const FIRST = COLUMNS.indexOf('first_name')
 const EMAIL = COLUMNS.indexOf('email')
@@ -12,7 +12,7 @@ const COUNTRY = COLUMNS.indexOf('country')
 const DUP = codeOf('email.duplicate')
 
 test('editing a cell writes the value, revalidates the row and recounts', () => {
-  seed([r(''), r('ok@b.co')])
+  seedStore([customerRow(''), customerRow('ok@b.co')])
   expect(store.counts.get('email.missing')).toBe(1)
   editCell(0, EMAIL, 'fixed@b.co')
   expect(store.rows[0][EMAIL]).toBe('fixed@b.co')
@@ -22,7 +22,7 @@ test('editing a cell writes the value, revalidates the row and recounts', () => 
 })
 
 test('fixing one half of a duplicate pair clears the other; creating a collision flags both', () => {
-  seed([r('a@b.co'), r('a@b.co'), r('c@b.co')])
+  seedStore([customerRow('a@b.co'), customerRow('a@b.co'), customerRow('c@b.co')])
   expect(store.flags[EMAIL][0]).toBe(DUP)
   editCell(1, EMAIL, 'b@b.co')
   expect(store.flags[EMAIL][0]).toBe(0)
@@ -34,7 +34,7 @@ test('fixing one half of a duplicate pair clears the other; creating a collision
 
 test('the duplicate check only runs when an email or customer id was touched', () => {
   // Seeded without the duplicate pass, so the pair is unmarked until something triggers the check.
-  seed([r('same@b.co'), r('same@b.co')], { withDuplicateCheck: false })
+  seedStore([customerRow('same@b.co'), customerRow('same@b.co')], { withDuplicateCheck: false })
   expect(store.flags[EMAIL][0]).toBe(0)
   editCell(0, FIRST, 'Lena')
   expect(store.flags[EMAIL][0]).toBe(0) // still unmarked: a name edit must not trigger the check
@@ -46,7 +46,7 @@ test('the duplicate check only runs when an email or customer id was touched', (
 })
 
 test('undo restores values in reverse order after a multi-cell change followed by a single edit', () => {
-  seed([r('a@b.co', 'Germany'), r('b@b.co', 'France')])
+  seedStore([customerRow('a@b.co', 'Germany'), customerRow('b@b.co', 'France')])
   applyChange('countries', [{ row: 0, col: COUNTRY, newValue: 'DE' }, { row: 1, col: COUNTRY, newValue: 'FR' }])
   editCell(0, COUNTRY, 'AT')
   expect(history.undo).toHaveLength(2)
@@ -62,7 +62,7 @@ test('undo restores values in reverse order after a multi-cell change followed b
 })
 
 test('editing back to the original clears the changed mark; originalValue remembers the loaded value', () => {
-  seed([r('a@b.co')])
+  seedStore([customerRow('a@b.co')])
   editCell(0, EMAIL, 'x@b.co')
   editCell(0, EMAIL, 'y@b.co')
   expect(originalValue(0, EMAIL)).toBe('a@b.co')
@@ -71,7 +71,7 @@ test('editing back to the original clears the changed mark; originalValue rememb
 })
 
 test('a row fixed while a problem filter is active stays in view until the filter changes', () => {
-  seed([r(''), r('ok@b.co'), r('')])
+  seedStore([customerRow(''), customerRow('ok@b.co'), customerRow('')])
   setQuery({ issueKey: 'email.missing' })
   expect([...store.view]).toEqual([0, 2])
   editCell(0, EMAIL, 'fixed@b.co')
@@ -83,7 +83,7 @@ test('a row fixed while a problem filter is active stays in view until the filte
 })
 
 test('every change bumps the version once', () => {
-  seed([r('a@b.co')])
+  seedStore([customerRow('a@b.co')])
   const v = store.version
   editCell(0, FIRST, 'Lena')
   expect(store.version).toBe(v + 1)
@@ -95,7 +95,7 @@ test('every change bumps the version once', () => {
 import { revertAllChanges } from './changes'
 
 test('revertAllChanges restores every changed cell to its loaded value in one undoable change', () => {
-  seed([r('a@b.co', 'Germany'), r('b@b.co', 'France'), r('c@b.co', 'DE')])
+  seedStore([customerRow('a@b.co', 'Germany'), customerRow('b@b.co', 'France'), customerRow('c@b.co', 'DE')])
   applyChange('countries', [{ row: 0, col: COUNTRY, newValue: 'DE' }, { row: 1, col: COUNTRY, newValue: 'FR' }])
   editCell(0, EMAIL, 'x@b.co')
   editCell(0, EMAIL, 'y@b.co')
@@ -118,13 +118,13 @@ test('revertAllChanges restores every changed cell to its loaded value in one un
 })
 
 test('revertAllChanges with nothing changed does nothing', () => {
-  seed([r('a@b.co')])
+  seedStore([customerRow('a@b.co')])
   expect(revertAllChanges()).toBeUndefined()
   expect(history.undo).toHaveLength(0)
 })
 
 test('revertAllChanges skips cells that were edited back to their original by hand', () => {
-  seed([r('a@b.co')])
+  seedStore([customerRow('a@b.co')])
   editCell(0, EMAIL, 'x@b.co')
   editCell(0, EMAIL, 'a@b.co')
   expect(revertAllChanges()).toBeUndefined()

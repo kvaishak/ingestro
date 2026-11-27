@@ -1,50 +1,41 @@
 import { test, expect } from 'vitest'
 import { COLUMNS } from './columns'
 import { codeOf } from './catalog'
-import { validateCell, validateRow } from './rules'
-import { markDuplicates } from './duplicates'
-import { row } from './testUtils'
+import { validateCell, validateRow, validateRows } from './rules'
+import { markDuplicates, positionsWithRepeatedValues } from './duplicates'
+import { cleanRow } from '../test/fixtures'
 
 const E = COLUMNS.indexOf('email')
 const ID = COLUMNS.indexOf('customer_id')
 
-function flagsFor(rows: string[][]) {
-  const flags = COLUMNS.map(() => new Uint8Array(rows.length))
-  rows.forEach((r, i) => validateRow(r).forEach((c, k) => { flags[k][i] = c }))
-  return flags
-}
-
-test('marks both rows of a pair, skips invalid and removed rows, clears stale marks', () => {
-  const rows = [row({ email: 'a@b.co' }), row({ email: 'a@b.co' }), row({ email: 'bad' }), row({ email: 'a@b.co' })]
-  const flags = flagsFor(rows)
-  const removed = new Uint8Array(4); removed[3] = 1
+test('marks both rows of a pair, skips invalid rows, clears stale marks', () => {
+  const rows = [cleanRow({ email: 'a@b.co' }), cleanRow({ email: 'a@b.co' }), cleanRow({ email: 'bad' })]
+  const flags = validateRows(rows)
   const dup = codeOf('email.duplicate')
-  markDuplicates(rows, 4, flags, removed)
-  expect([flags[E][0], flags[E][1], flags[E][2], flags[E][3]]).toEqual([dup, dup, codeOf('email.invalid'), 0])
+  markDuplicates(rows, 3, flags)
+  expect([flags[E][0], flags[E][1], flags[E][2]]).toEqual([dup, dup, codeOf('email.invalid')])
   rows[1][E] = 'other@b.co'; flags[E][1] = validateCell('email', rows[1][E])
-  markDuplicates(rows, 4, flags, removed)
+  markDuplicates(rows, 3, flags)
   expect([flags[E][0], flags[E][1]]).toEqual([0, 0])
 })
 
-test('customer ids are checked the same way, and removed may be null', () => {
-  const rows = [row({ customer_id: 'C-9' }), row({ customer_id: 'C-9' }), row({ customer_id: 'C-10' })]
-  const flags = flagsFor(rows)
-  markDuplicates(rows, 3, flags, null)
+test('customer ids are checked the same way', () => {
+  const rows = [cleanRow({ customer_id: 'C-9' }), cleanRow({ customer_id: 'C-9' }), cleanRow({ customer_id: 'C-10' })]
+  const flags = validateRows(rows)
+  markDuplicates(rows, 3, flags)
   const dup = codeOf('customer_id.duplicate')
   expect([flags[ID][0], flags[ID][1], flags[ID][2]]).toEqual([dup, dup, 0])
 })
 
 test('only the first rowCount rows are considered (overlays may have spare capacity)', () => {
-  const rows = [row({ email: 'a@b.co' }), row({ email: 'a@b.co' })]
+  const rows = [cleanRow({ email: 'a@b.co' }), cleanRow({ email: 'a@b.co' })]
   const flags = COLUMNS.map(() => new Uint8Array(16))
   rows.forEach((r, i) => validateRow(r).forEach((c, k) => { flags[k][i] = c }))
-  markDuplicates(rows, 1, flags, null)
+  markDuplicates(rows, 1, flags)
   expect(flags[E][0]).toBe(0)
 })
 
-// ---- shared core, also used by the worker at the end of loading ----
-import { positionsWithRepeatedValues } from './duplicates'
-
+// The shared core, also used by the worker at the end of loading.
 test('positionsWithRepeatedValues returns every position whose value appears more than once, skipping nulls', () => {
   expect(positionsWithRepeatedValues(['a', 'b', 'a', null, null, 'c', 'b'])).toEqual([0, 2, 1, 6])
   expect(positionsWithRepeatedValues(['x', 'y'])).toEqual([])

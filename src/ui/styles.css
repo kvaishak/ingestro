@@ -2,7 +2,7 @@
   --bg: #f6f7f9; --panel: #fff; --line: #e3e6ea; --text: #1f2328; --muted: #6b7280;
   --red: #d1242f; --red-bg: #fff1f2; --amber: #b45309; --amber-bg: #fffbeb;
   --green: #1a7f37; --green-bg: #ecfdf3; --blue: #0969da; --blue-bg: #eef4ff;
-  --row-h: 32px;
+  --row-h: 32px; /* must match ROW_HEIGHT in grid/Grid.tsx */
 }
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
@@ -37,7 +37,7 @@ button:disabled { cursor: default; opacity: .5; }
 
 /* grid */
 .gridwrap { flex: 1; min-height: 0; overflow: auto; background: var(--panel); position: relative; font-size: 13px; }
-.grid-cols { display: grid; grid-template-columns: 18px 110px 120px 130px 260px 120px 150px 110px 130px; min-width: max-content; }
+.grid-cols { display: grid; grid-template-columns: 18px 110px 120px 130px 260px 120px 150px 110px 130px; /* gutter, then one per column in COLUMNS order */ min-width: max-content; }
 .grid-header { position: sticky; top: 0; z-index: 1; background: #f9fafb; border-bottom: 1px solid var(--line); font-weight: 600; color: #374151; height: var(--row-h); }
 .grid-body { position: relative; }
 .grid-row { position: absolute; top: 0; left: 0; right: 0; height: var(--row-h); border-bottom: 1px solid #f0f1f3; background: #fff; }

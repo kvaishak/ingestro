@@ -114,3 +114,14 @@ export function validateRow(row: Row, into: Uint8Array = new Uint8Array(COLUMNS.
   }
   return into
 }
+
+/** Issue codes for many rows: one Uint8Array per column, rows.length long. */
+export function validateRows(rows: Row[]): Uint8Array[] {
+  const flags = COLUMNS.map(() => new Uint8Array(rows.length))
+  const codes = new Uint8Array(COLUMNS.length)
+  for (let i = 0; i < rows.length; i++) {
+    validateRow(rows[i], codes)
+    for (let c = 0; c < COLUMNS.length; c++) flags[c][i] = codes[c]
+  }
+  return flags
+}

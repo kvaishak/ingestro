@@ -5,18 +5,18 @@ import { store } from './store'
 import { history, undo } from './changes'
 import { setQuery } from './query'
 import { planBulk, applyBulk } from './bulk'
-import { r, seed } from './testUtils'
+import { customerRow, seedStore } from '../test/fixtures'
 
 const COUNTRY = COLUMNS.indexOf('country')
 const INVALID = codeOf('country.invalid')
 
 const rows = () => [
-  r('a@b.co', 'Germany'), r('b@b.co', 'Deutschland'), r('c@b.co', 'FRANCE'),
-  r('d@b.co', 'Germany'), r('e@b.co', 'Narnia'), r('f@b.co', ''),
+  customerRow('a@b.co', 'Germany'), customerRow('b@b.co', 'Deutschland'), customerRow('c@b.co', 'FRANCE'),
+  customerRow('d@b.co', 'Germany'), customerRow('e@b.co', 'Narnia'), customerRow('f@b.co', ''),
 ]
 
 test('planBulk groups recognised values by from -> to, biggest group first, and reports what is left untouched', () => {
-  seed(rows())
+  seedStore(rows())
   const plan = planBulk('country.invalid')
   expect(plan.column).toBe('country')
   expect(plan.groups.map((g) => [g.from, g.to, g.rows])).toEqual([
@@ -28,7 +28,7 @@ test('planBulk groups recognised values by from -> to, biggest group first, and 
 })
 
 test('applyBulk is one undoable change that fixes the recognised rows and leaves the rest flagged', () => {
-  seed(rows())
+  seedStore(rows())
   setQuery({ issueKey: 'country.invalid' })
   expect(store.view.length).toBe(5) // 4 recognised + Narnia; the empty one is a different problem
 
@@ -49,7 +49,7 @@ test('applyBulk is one undoable change that fixes the recognised rows and leaves
 })
 
 test('applyBulk with nothing recognised changes nothing and records nothing', () => {
-  seed([r('a@b.co', 'Narnia')])
+  seedStore([customerRow('a@b.co', 'Narnia')])
   const entry = applyBulk(planBulk('country.invalid'))
   expect(entry).toBeUndefined()
   expect(history.undo).toHaveLength(0)

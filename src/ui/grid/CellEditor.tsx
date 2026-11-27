@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { COLUMNS } from '../validation/columns'
-import { issueFor } from '../validation/catalog'
-import { validateCell } from '../validation/rules'
-import { store } from '../store/store'
-import { stopEditing } from './session'
-import { saveCell } from './actions'
+import { COLUMNS } from '../../validation/columns'
+import { issueFor } from '../../validation/catalog'
+import { validateCell } from '../../validation/rules'
+import { store } from '../../store/store'
+import { stopEditing } from '../session'
+import { saveCell } from '../actions'
 
 interface Props {
   row: number

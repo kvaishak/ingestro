@@ -24,6 +24,21 @@ export interface IssueDef {
    * never stored, never applied without the user's click.
    */
   suggest?: (value: string) => string | undefined
+  /** Wording for the bulk fix screens. Required when `suggest` is set (checked by a test). */
+  bulk?: BulkWording
+}
+
+export interface BulkWording {
+  /** Heading of the review screen, e.g. "Change country names to codes" */
+  previewTitle: string
+  /** Confirm dialog text; `rows` is already formatted, e.g. "2,895" */
+  confirmBody: (rows: string) => string
+  /** Success line after applying; `values` is already formatted */
+  appliedText: (values: string) => string
+  /** Under the count of values the tool cannot suggest a fix for */
+  manualFixHint: string
+  /** After a bulk fix, for what is left */
+  manualFixInstruction: string
 }
 
 export const CATALOG: IssueDef[] = [
@@ -90,7 +105,14 @@ export const CATALOG: IssueDef[] = [
     title: 'Country is not a two-letter code',
     what: 'Countries must be written as their two-letter code in capitals, not as a name.',
     good: 'DE for Germany, FR for France, US for the United States',
-    suggest: countryCodeFor },
+    suggest: countryCodeFor,
+    bulk: {
+      previewTitle: 'Change country names to codes',
+      confirmBody: (rows) => `Country names will be replaced by their two-letter codes in ${rows} rows. You can undo this afterwards.`,
+      appliedText: (values) => `Changed ${values} country values to codes.`,
+      manualFixHint: "You'll need to type the code yourself.",
+      manualFixInstruction: 'Type the correct code into each cell.',
+    } },
 
   // plan
   { key: 'plan.missing', column: 'plan', code: 1,
@@ -135,6 +157,12 @@ export function issueFor(column: Column, code: number): IssueDef | undefined {
 
 export function codeOf(key: string): number {
   return issueByKey(key).code
+}
+
+/** The bulk-fix wording for a problem. Throws when it is missing: every problem with `suggest` needs it. */
+export function bulkWordingOf(issue: IssueDef): BulkWording {
+  if (!issue.bulk) throw new Error(`No bulk wording for issue: ${issue.key}`)
+  return issue.bulk
 }
 
 /** The suggested value for a cell, if the problem on it comes with one. */

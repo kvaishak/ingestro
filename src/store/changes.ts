@@ -1,9 +1,10 @@
-import { COLUMNS, columnIndex } from '../validation/columns'
+import { COLUMNS } from '../validation/columns'
 import { validateRow } from '../validation/rules'
-import { markDuplicates } from '../validation/duplicates'
-import { store, bump } from './store'
+import { markDuplicates, isDuplicateChecked } from '../validation/duplicates'
+import { store, bump, customerIdOf } from './store'
 import { recount } from './counts'
 import { pinRow, refreshView } from './query'
+import { formatCount } from '../format'
 
 /**
  * The only code allowed to write a cell value.
@@ -33,9 +34,6 @@ const originals = new Map<number, string>()
 const cellKey = (row: number, col: number) => row * COLUMNS.length + col
 const cellFromKey = (key: number) => ({ row: Math.floor(key / COLUMNS.length), col: key % COLUMNS.length })
 
-const EMAIL = columnIndex('email')
-const CUSTOMER_ID = columnIndex('customer_id')
-
 export function applyChange(label: string, cells: { row: number; col: number; newValue: string }[]): ChangeEntry {
   const entry: ChangeEntry = {
     label,
@@ -56,7 +54,7 @@ export function undo(): ChangeEntry | undefined {
 
 export function editCell(row: number, col: number, value: string): ChangeEntry {
   pinRow(row)
-  return applyChange(`${COLUMNS[col]} for ${store.rows[row][0]}`, [{ row, col, newValue: value }])
+  return applyChange(`${COLUMNS[col]} for ${customerIdOf(row)}`, [{ row, col, newValue: value }])
 }
 
 export function originalValue(row: number, col: number): string | undefined {
@@ -83,7 +81,7 @@ export function revertAllChanges(): ChangeEntry | undefined {
     if (store.rows[row][col] !== original) cells.push({ row, col, newValue: original })
   }
   if (cells.length === 0) return undefined
-  return applyChange(`Reverted ${cells.length.toLocaleString('en-US')} changes`, cells)
+  return applyChange(`Reverted ${formatCount(cells.length)} changes`, cells)
 }
 
 export function resetHistory(): void {
@@ -125,6 +123,6 @@ function revalidate(writes: CellWrite[]): void {
     for (let c = 0; c < COLUMNS.length; c++) store.flags[c][row] = codes[c]
   }
 
-  const touchedAKeyColumn = writes.some((w) => w.col === EMAIL || w.col === CUSTOMER_ID)
-  if (touchedAKeyColumn) markDuplicates(store.rows, store.rowCount, store.flags, null)
+  const touchedACheckedColumn = writes.some((w) => isDuplicateChecked(w.col))
+  if (touchedACheckedColumn) markDuplicates(store.rows, store.rowCount, store.flags)
 }

@@ -13,7 +13,7 @@ export function recount(): void {
   let problemRows = 0
 
   for (let row = 0; row < store.rowCount; row++) {
-    let rowHasProblem = false
+    let hasProblem = false
     for (let c = 0; c < COLUMNS.length; c++) {
       const code = store.flags[c][row]
       if (code === 0) continue
@@ -21,12 +21,25 @@ export function recount(): void {
       if (!issue) continue
       counts.set(issue.key, (counts.get(issue.key) ?? 0) + 1)
       problemCells++
-      rowHasProblem = true
+      hasProblem = true
     }
-    if (rowHasProblem) problemRows++
+    if (hasProblem) problemRows++
   }
 
   store.counts = counts
   store.problemCells = problemCells
   store.problemRows = problemRows
+}
+
+/** How many cells currently have this problem (0 when none). */
+export function countOf(issueKey: string): number {
+  return store.counts.get(issueKey) ?? 0
+}
+
+/** Does any cell in this row have a problem? */
+export function rowHasProblem(row: number): boolean {
+  for (let c = 0; c < COLUMNS.length; c++) {
+    if (store.flags[c][row] !== 0) return true
+  }
+  return false
 }

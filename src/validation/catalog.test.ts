@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { CATALOG, issueByKey, issueFor, codeOf } from './catalog'
+import { CATALOG, issueByKey, issueFor, codeOf, suggestionFor } from './catalog'
 import { COLUMNS } from './columns'
 
 test('keys are unique and codes are unique within a column, within 1..255', () => {
@@ -31,8 +31,11 @@ test('copy is plain language: no jargon', () => {
   }
 })
 
-// ---- Stage 4: suggestions hang off catalog entries ----
-import { suggestionFor } from './catalog'
+// Suggestions hang off catalog entries.
+
+test('every problem with a suggestion also has wording for the bulk fix screens', () => {
+  for (const i of CATALOG.filter((issue) => issue.suggest)) expect(i.bulk, i.key).toBeDefined()
+})
 
 test('suggestionFor returns the entry suggestion where one exists, otherwise undefined', () => {
   expect(suggestionFor('country', codeOf('country.invalid'), 'Deutschland')).toBe('DE')

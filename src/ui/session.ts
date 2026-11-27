@@ -1,6 +1,7 @@
 /**
- * Small UI-only state that is not part of the data: which cell is being edited, and the
- * current toast. Kept outside React state so any component can read it after a bump.
+ * Small UI-only state that is not part of the data: which cell is being edited, the current
+ * toast, and what the problems panel shows. Kept outside React state so any component can
+ * read it after a bump.
  */
 import { bump } from '../store/store'
 

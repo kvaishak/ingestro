@@ -1,5 +1,5 @@
 {
-  "name": "vite-scaffold",
+  "name": "ingestro",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc -b",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.28",

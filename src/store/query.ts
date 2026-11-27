@@ -8,7 +8,7 @@ export interface SortSpec {
 }
 
 export interface Query {
-  /** Issue filter, used from Stage 2. */
+  /** Show only rows with this problem; null = no problem filter. */
   issueKey: string | null
   search: string
   sort: SortSpec | null
@@ -95,7 +95,7 @@ function rowContains(row: string[], needle: string): boolean {
 }
 
 // Dictionary-style ordering: "pl" sorts next to "PL", "Müller" next to "Muller".
-// Measured on 200k rows to cost the same as plain code-point compare (docs/perf-notes.md).
+// Measured on 200k rows to cost the same as plain code-point compare (PERFORMANCE.md).
 const collator = new Intl.Collator('en')
 function compareText(a: string, b: string): number {
   return collator.compare(a, b)
@@ -110,6 +110,13 @@ function compareSpend(a: string, b: string): number {
   if (xn && yn) return x - y
   if (xn !== yn) return xn ? -1 : 1 // numbers before non-numbers
   return compareText(a, b)
+}
+
+/** What a click on a column header does: ascending -> descending -> no sort. A new column starts ascending. */
+export function nextSort(current: SortSpec | null, column: Column): SortSpec | null {
+  if (!current || current.column !== column) return { column, dir: 'asc' }
+  if (current.dir === 'asc') return { column, dir: 'desc' }
+  return null
 }
 
 /** Recompute the view for the current query without changing it (after a data change). */

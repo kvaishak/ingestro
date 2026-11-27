@@ -1,10 +1,11 @@
 import { test, expect } from 'vitest'
+import { COLUMNS } from './columns'
 import { codeOf } from './catalog'
-import { validateCell, validateRow } from './rules'
-import { row } from './testUtils'
+import { validateCell, validateRow, validateRows } from './rules'
+import { cleanRow } from '../test/fixtures'
 
 test('a clean row has no issues', () => {
-  expect([...validateRow(row())]).toEqual([0, 0, 0, 0, 0, 0, 0, 0])
+  expect([...validateRow(cleanRow())]).toEqual([0, 0, 0, 0, 0, 0, 0, 0])
 })
 
 test.each([
@@ -58,7 +59,14 @@ test('validateCell never returns a duplicate code', () => {
 
 test('validateRow reuses the output array when given one', () => {
   const out = new Uint8Array(8)
-  const res = validateRow(row({ email: '' }), out)
+  const res = validateRow(cleanRow({ email: '' }), out)
   expect(res).toBe(out)
   expect(out[3]).toBe(codeOf('email.missing'))
+})
+
+test('validateRows returns one array of codes per column, one code per row', () => {
+  const flags = validateRows([cleanRow(), cleanRow({ email: '' }), cleanRow({ plan: 'PRO' })])
+  expect(flags).toHaveLength(COLUMNS.length)
+  expect([...flags[COLUMNS.indexOf('email')]]).toEqual([0, codeOf('email.missing'), 0])
+  expect([...flags[COLUMNS.indexOf('plan')]]).toEqual([0, 0, codeOf('plan.invalid')])
 })

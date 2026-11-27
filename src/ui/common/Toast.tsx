@@ -1,5 +1,5 @@
-import { session, hideToast } from './session'
-import { undoLastChange } from './actions'
+import { session, hideToast } from '../session'
+import { undoLastChange } from '../actions'
 
 /** Bottom-centre confirmation of the last change, with Undo while that is still possible. */
 export function Toast() {

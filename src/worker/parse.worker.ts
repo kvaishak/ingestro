@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
-import { COLUMNS, type Row } from '../validation/columns'
-import { validateRow } from '../validation/rules'
+import type { Row } from '../validation/columns'
+import { validateRows } from '../validation/rules'
 import { DUPLICATE_CHECKS, positionsWithRepeatedValues } from '../validation/duplicates'
 import type { DuplicatePositions, WorkerIn, WorkerOut } from './protocol'
 import { rowsFromChunk } from './rowsFromChunk'
@@ -9,17 +9,6 @@ const CHUNK_BYTES = 1 << 20 // ~1 MB of CSV per batch, roughly 12k rows
 
 const post = (msg: WorkerOut, transfer: Transferable[] = []) =>
   (self as unknown as Worker).postMessage(msg, transfer)
-
-/** Validate every row of a batch: one Uint8Array of issue codes per column. Reads only, never changes a value. */
-function validateBatch(rows: Row[]): Uint8Array[] {
-  const flags = COLUMNS.map(() => new Uint8Array(rows.length))
-  const codes = new Uint8Array(COLUMNS.length)
-  for (let i = 0; i < rows.length; i++) {
-    validateRow(rows[i], codes)
-    for (let c = 0; c < COLUMNS.length; c++) flags[c][i] = codes[c]
-  }
-  return flags
-}
 
 /**
  * The duplicate check needs every row, so the worker keeps just the two checked columns
@@ -62,7 +51,7 @@ self.onmessage = (e: MessageEvent<WorkerIn>) => {
       const rows = rowsFromChunk(results.data, isFirstChunk)
       isFirstChunk = false
       rowCount += rows.length
-      const flags = validateBatch(rows)
+      const flags = validateRows(rows) // reads only, never changes a value
       duplicates.add(rows, flags)
       post(
         { type: 'batch', rows, flags, bytesRead: results.meta.cursor, bytesTotal: file.size },

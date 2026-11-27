@@ -1,6 +1,7 @@
 import { columnIndex, type Column } from '../validation/columns'
 import { issueByKey } from '../validation/catalog'
 import { applyChange, type ChangeEntry } from './changes'
+import { formatCount } from '../format'
 import { splitBySuggestion, type UnrecognisedSpelling } from './suggestions'
 
 /**
@@ -53,5 +54,5 @@ export function applyBulk(plan: BulkPlan): ChangeEntry | undefined {
   if (plan.total === 0) return undefined
   const col = columnIndex(plan.column)
   const cells = plan.groups.flatMap((group) => group.rows.map((row) => ({ row, col, newValue: group.to })))
-  return applyChange(`${issueByKey(plan.issueKey).title}: ${plan.total.toLocaleString('en-US')} values`, cells)
+  return applyChange(`${issueByKey(plan.issueKey).title}: ${formatCount(plan.total)} values`, cells)
 }

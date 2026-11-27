@@ -14,8 +14,6 @@ export type Column = (typeof COLUMNS)[number]
 /** A data row: always exactly 8 strings, in COLUMNS order. */
 export type Row = string[]
 
-export const COLUMN_COUNT = COLUMNS.length
-
 export const COLUMN_LABEL: Record<Column, string> = {
   customer_id: 'Customer ID',
   first_name: 'First name',

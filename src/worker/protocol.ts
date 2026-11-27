@@ -8,16 +8,33 @@ export interface DuplicatePositions {
   customer_id: Uint32Array
 }
 
-export type WorkerOut =
-  | {
-      type: 'batch'
-      rows: Row[]
-      /** One Uint8Array per column, rows.length long: the issue codes for this batch. */
-      flags: Uint8Array[]
-      bytesRead: number
-      bytesTotal: number
-    }
-  /** Every row has been sent; the worker is now running the duplicate check. */
-  | { type: 'parsed'; rowCount: number }
-  | { type: 'done'; rowCount: number; duplicates: DuplicatePositions }
-  | { type: 'error'; message: string }
+/** A chunk of parsed rows with their issue codes. */
+export interface BatchMessage {
+  type: 'batch'
+  rows: Row[]
+  /** One Uint8Array per column, rows.length long: the issue codes for this batch. */
+  flags: Uint8Array[]
+  bytesRead: number
+  bytesTotal: number
+}
+
+/** Every row has been sent; the worker is now running the duplicate check. */
+export interface ParsedMessage {
+  type: 'parsed'
+  rowCount: number
+}
+
+/** The duplicate check is finished: these positions hold a repeated value. */
+export interface DoneMessage {
+  type: 'done'
+  rowCount: number
+  duplicates: DuplicatePositions
+}
+
+export interface ErrorMessage {
+  type: 'error'
+  message: string
+}
+
+/** Messages from the worker to the main thread, in the order they arrive: batch*, parsed, done (or error). */
+export type WorkerOut = BatchMessage | ParsedMessage | DoneMessage | ErrorMessage

@@ -1,7 +1,7 @@
 import { useRef, type ChangeEvent } from 'react'
-import { loadFile } from '../store/load'
-import { fetchCsv } from '../store/fetchCsv'
+import { loadFile, fetchCsv } from '../../store/load'
 
+/** The first screen: pick a CSV from disk, or try the bundled sample. */
 export function FilePicker() {
   const input = useRef<HTMLInputElement>(null)
 

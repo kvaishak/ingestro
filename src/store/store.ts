@@ -1,4 +1,4 @@
-import { COLUMNS, type Row } from '../validation/columns'
+import { COLUMNS, columnIndex, type Row } from '../validation/columns'
 
 export interface LoadingState {
   /** 'checking' = all rows are in, the duplicate pass is running */
@@ -7,6 +7,8 @@ export interface LoadingState {
   bytesRead: number
   bytesTotal: number
   message?: string
+  /** How long loading took, in seconds. Set once when status becomes 'done'. */
+  seconds?: number
 }
 
 /** Overlays start with room for this many rows and double whenever a batch does not fit. */
@@ -48,6 +50,11 @@ function emptyOverlays(): Uint8Array[] {
 
 function idleLoading(): LoadingState {
   return { status: 'idle', rowsLoaded: 0, bytesRead: 0, bytesTotal: 0 }
+}
+
+/** True once every row is in and checked: sorting, searching, editing and the panel are available. */
+export function isLoaded(): boolean {
+  return store.loading.status === 'done'
 }
 
 // ---- subscriptions ----
@@ -93,6 +100,13 @@ export function appendBatch(rows: Row[], flags?: Uint8Array[]): void {
     for (let c = 0; c < COLUMNS.length; c++) store.flags[c].set(flags[c], start)
   }
   store.rowCount = start + rows.length
+}
+
+const CUSTOMER_ID = columnIndex('customer_id')
+
+/** The customer ID of a row, as it is now. Used to name a row in messages to the user. */
+export function customerIdOf(row: number): string {
+  return store.rows[row][CUSTOMER_ID]
 }
 
 /** The view for "no search, no sort": every row, in the order it appeared in the file. */

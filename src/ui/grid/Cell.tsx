@@ -1,8 +1,8 @@
-import { COLUMNS } from '../validation/columns'
-import { issueFor, suggestionFor } from '../validation/catalog'
-import { store } from '../store/store'
-import { originalValue } from '../store/changes'
-import { session } from './session'
+import { COLUMNS } from '../../validation/columns'
+import { issueFor, suggestionFor } from '../../validation/catalog'
+import { store } from '../../store/store'
+import { originalValue } from '../../store/changes'
+import { session } from '../session'
 import { CellEditor } from './CellEditor'
 
 interface Props {

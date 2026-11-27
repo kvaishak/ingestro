@@ -1,8 +1,10 @@
 import { test, expect, beforeEach } from 'vitest'
 import { store, reset, appendBatch, positionsInFileOrder } from './store'
-import { setQuery, resetQuery, query } from './query'
+import { setQuery, resetQuery, query, nextSort } from './query'
+import { validateRows } from '../validation/rules'
+import { cleanRow } from '../test/fixtures'
 
-const mk = (spend: string, last: string) => ['C', 'x', last, 'e', 'd', 'c', 'p', spend]
+const mk = (spend: string, last: string) => cleanRow({ monthly_spend: spend, last_name: last })
 
 beforeEach(() => {
   reset()
@@ -41,12 +43,12 @@ test('text sorts dictionary-style: case does not split the alphabet', () => {
 
 test('sort applies to search results', () => {
   setQuery({ search: 'e', sort: { column: 'last_name', dir: 'desc' } })
-  // 'e' matches the email cell of every row, so all rows, sorted descending
+  // 'e' matches the country 'DE' of every row, so all rows, sorted descending
   expect([...store.view].map((i) => store.rows[i][2])).toEqual(['Needle', 'd', 'c', 'b', 'a'])
 })
 
 test('blanks are not special-cased: they sort as the empty string, first ascending', () => {
-  appendBatch([['C', 'x', '', 'e', 'd', 'c', 'p', '0']])
+  appendBatch([cleanRow({ last_name: '', monthly_spend: '0' })])
   setQuery({ sort: { column: 'last_name', dir: 'asc' } })
   expect(store.rows[store.view[0]][2]).toBe('')
 })
@@ -59,19 +61,15 @@ test('setQuery merges partial updates and bumps the version', () => {
   expect(store.version).toBe(v + 1)
 })
 
-// ---- Stage 2: filter by problem type ----
-import { COLUMNS } from '../validation/columns'
-import { validateCell } from '../validation/rules'
+// Filter by problem type.
 
-const withEmail = (email: string) => ['C', 'Anna', 'M', email, '2024-01-02', 'DE', 'pro', '1']
-const flagsFor = (rows: string[][]) =>
-  COLUMNS.map((column, c) => Uint8Array.from(rows.map((r) => validateCell(column, r[c]))))
+const withEmail = (email: string) => cleanRow({ email })
 
 test('issue filter keeps only rows whose cell has that problem, and composes with search and sort', () => {
   reset()
   resetQuery()
   const rows = [withEmail(''), withEmail('ok@b.co'), withEmail(''), withEmail('x'), withEmail('ok2@b.co')]
-  appendBatch(rows, flagsFor(rows))
+  appendBatch(rows, validateRows(rows))
   store.view = positionsInFileOrder()
 
   setQuery({ issueKey: 'email.missing' })
@@ -85,4 +83,13 @@ test('issue filter keeps only rows whose cell has that problem, and composes wit
 
   setQuery({ issueKey: 'email.missing', sort: { column: 'customer_id', dir: 'desc' } })
   expect([...store.view]).toHaveLength(2)
+})
+
+test('nextSort cycles one column asc -> desc -> none, and a new column starts at asc', () => {
+  const asc = nextSort(null, 'email')
+  expect(asc).toEqual({ column: 'email', dir: 'asc' })
+  const desc = nextSort(asc, 'email')
+  expect(desc).toEqual({ column: 'email', dir: 'desc' })
+  expect(nextSort(desc, 'email')).toBeNull()
+  expect(nextSort(desc, 'plan')).toEqual({ column: 'plan', dir: 'asc' })
 })

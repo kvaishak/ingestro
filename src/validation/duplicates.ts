@@ -10,14 +10,18 @@ import { codeOf } from './catalog'
  *    main thread free) and by markDuplicates().
  *  - markDuplicates(): main-thread version over the store's rows and flags, rerun after every edit.
  *
- * A row is left out when it is removed, or when its cell already has another issue
- * (an invalid email cannot also be a duplicate).
+ * A row is left out when its cell already has another issue (an invalid email cannot also be a duplicate).
  */
 
 export const DUPLICATE_CHECKS = [
   { column: 'email', columnIndex: columnIndex('email'), duplicateCode: codeOf('email.duplicate') },
   { column: 'customer_id', columnIndex: columnIndex('customer_id'), duplicateCode: codeOf('customer_id.duplicate') },
 ] as const
+
+/** Is this column one of the duplicate-checked ones? Changing such a cell means re-running the check. */
+export function isDuplicateChecked(columnIndex: number): boolean {
+  return DUPLICATE_CHECKS.some((check) => check.columnIndex === columnIndex)
+}
 
 /**
  * Positions whose value occurs more than once. `null` means "do not consider this position".
@@ -40,12 +44,12 @@ export function positionsWithRepeatedValues(values: (string | null)[]): number[]
   return repeated
 }
 
-export function markDuplicates(rows: Row[], rowCount: number, flags: Uint8Array[], removed: Uint8Array | null): void {
+export function markDuplicates(rows: Row[], rowCount: number, flags: Uint8Array[]): void {
   for (const check of DUPLICATE_CHECKS) {
     const columnFlags = flags[check.columnIndex]
     clearStaleDuplicateMarks(columnFlags, rowCount, check.duplicateCode)
 
-    const values = valuesToCheck(rows, rowCount, check.columnIndex, columnFlags, removed)
+    const values = valuesToCheck(rows, rowCount, check.columnIndex, columnFlags)
     for (const i of positionsWithRepeatedValues(values)) columnFlags[i] = check.duplicateCode
   }
 }
@@ -57,14 +61,11 @@ function clearStaleDuplicateMarks(columnFlags: Uint8Array, rowCount: number, dup
 }
 
 /** The column's values, with null where the row must not take part in the check. */
-function valuesToCheck(
-  rows: Row[], rowCount: number, column: number, columnFlags: Uint8Array, removed: Uint8Array | null,
-): (string | null)[] {
+function valuesToCheck(rows: Row[], rowCount: number, column: number, columnFlags: Uint8Array): (string | null)[] {
   const values: (string | null)[] = new Array(rowCount)
   for (let i = 0; i < rowCount; i++) {
     const hasOtherIssue = columnFlags[i] !== 0
-    const isRemoved = removed !== null && removed[i] === 1
-    values[i] = hasOtherIssue || isRemoved ? null : rows[i][column]
+    values[i] = hasOtherIssue ? null : rows[i][column]
   }
   return values
 }

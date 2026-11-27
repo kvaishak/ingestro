@@ -2,7 +2,8 @@ import { test, expect, beforeEach } from 'vitest'
 import { COLUMNS } from '../validation/columns'
 import { codeOf } from '../validation/catalog'
 import { store, reset, appendBatch } from './store'
-import { applyDuplicatePositions } from './duplicateMarks'
+import { applyDuplicatePositions } from './load'
+import { cleanRow } from '../test/fixtures'
 
 const E = COLUMNS.indexOf('email')
 const ID = COLUMNS.indexOf('customer_id')
@@ -10,9 +11,9 @@ const ID = COLUMNS.indexOf('customer_id')
 beforeEach(() => {
   reset()
   appendBatch([
-    ['C-1', 'A', 'B', 'a@b.co', '2024-01-02', 'DE', 'pro', '1'],
-    ['C-1', 'A', 'B', 'a@b.co', '2024-01-02', 'DE', 'pro', '1'],
-    ['C-2', 'A', 'B', 'c@b.co', '2024-01-02', 'DE', 'pro', '1'],
+    cleanRow({ customer_id: 'C-1', email: 'a@b.co' }),
+    cleanRow({ customer_id: 'C-1', email: 'a@b.co' }),
+    cleanRow({ customer_id: 'C-2', email: 'c@b.co' }),
   ])
 })
 
