@@ -5,7 +5,7 @@ import { ConfirmDialog } from './ConfirmDialog'
 import { store } from '../store/store'
 import { query, setQuery } from '../store/query'
 import { issueByKey } from '../validation/catalog'
-import { setPanelMode } from './session'
+import { setPanelMode, showToast } from './session'
 
 const DEBOUNCE_MS = 200
 
@@ -77,7 +77,13 @@ export function Toolbar() {
           onConfirm={() => { setConfirmingRevert(false); revertEverything() }}
         />
       )}
-      <button className="btn primary" disabled title="Available once every problem is resolved">
+      <button
+        className="btn primary"
+        disabled={!ready || store.problemCells > 0}
+        title={store.problemCells > 0 ? `${store.problemCells.toLocaleString('en-US')} problems left` : 'Import'}
+        onClick={() => showToast('Import is not part of this prototype. Everything is ready to go.', false)}
+        data-testid="import"
+      >
         Import
       </button>
     </div>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="400" viewBox="0 0 1040 400" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/></marker>
+    <style>
+      .box { fill: #ffffff; stroke: #c7cdd4; stroke-width: 1.2; rx: 8; }
+      .worker { fill: #eef4ff; stroke: #9db7f0; }
+      .store { fill: #ecfdf3; stroke: #86d1a1; }
+      .ui { fill: #fffbeb; stroke: #f0c36b; }
+      .title { font-weight: 600; font-size: 14px; fill: #1f2328; }
+      .line { fill: #374151; }
+      .small { fill: #6b7280; font-size: 12px; }
+      .arrow { stroke: #6b7280; stroke-width: 1.4; fill: none; marker-end: url(#a); }
+      .label { fill: #6b7280; font-size: 11px; }
+      .lane { fill: #9ca3af; font-size: 11px; letter-spacing: .08em; }
+    </style>
+  </defs>
+
+  <text x="20" y="28" class="lane">LOADING, ONCE PER FILE</text>
+  <text x="20" y="246" class="lane">CHANGING: EVERY EDIT, BULK FIX, UNDO, REVERT</text>
+
+  <!-- row 1 -->
+  <rect x="20" y="44" width="120" height="120" class="box"/>
+  <text x="80" y="98" text-anchor="middle" class="title">CSV file</text>
+  <text x="80" y="118" text-anchor="middle" class="small">picked by the user</text>
+  <text x="80" y="134" text-anchor="middle" class="small">200,000 rows</text>
+
+  <path d="M140,104 L198,104" class="arrow"/>
+
+  <rect x="200" y="44" width="222" height="120" class="box worker"/>
+  <text x="311" y="68" text-anchor="middle" class="title">Web Worker</text>
+  <text x="311" y="90" text-anchor="middle" class="line">reads 1 MB at a time</text>
+  <text x="311" y="108" text-anchor="middle" class="line">checks every cell in the chunk</text>
+  <text x="311" y="126" text-anchor="middle" class="line">duplicate check at the end</text>
+  <text x="311" y="148" text-anchor="middle" class="small">the page never freezes</text>
+
+  <path d="M422,104 L498,104" class="arrow"/>
+  <text x="460" y="88" text-anchor="middle" class="label">rows +</text>
+  <text x="460" y="124" text-anchor="middle" class="label">issue codes</text>
+
+  <rect x="500" y="44" width="230" height="120" class="box store"/>
+  <text x="615" y="68" text-anchor="middle" class="title">Store (main thread)</text>
+  <text x="615" y="90" text-anchor="middle" class="line">rows, 8 strings each</text>
+  <text x="615" y="108" text-anchor="middle" class="line">1 byte per cell: issue code</text>
+  <text x="615" y="126" text-anchor="middle" class="line">1 byte per cell: changed by user</text>
+  <text x="615" y="148" text-anchor="middle" class="small">plain arrays, outside React</text>
+
+  <path d="M730,104 L806,104" class="arrow"/>
+  <text x="768" y="88" text-anchor="middle" class="label">list of</text>
+  <text x="768" y="124" text-anchor="middle" class="label">row positions</text>
+
+  <rect x="808" y="44" width="212" height="120" class="box ui"/>
+  <text x="914" y="68" text-anchor="middle" class="title">Screen (React)</text>
+  <text x="914" y="90" text-anchor="middle" class="line">filter → search → sort</text>
+  <text x="914" y="108" text-anchor="middle" class="line">grid paints ~40 visible rows</text>
+  <text x="914" y="126" text-anchor="middle" class="line">panel: counts, explanations</text>
+  <text x="914" y="148" text-anchor="middle" class="small">repaints on a version number</text>
+
+  <!-- row 2 -->
+  <rect x="20" y="262" width="200" height="104" class="box ui"/>
+  <text x="120" y="288" text-anchor="middle" class="title">User action</text>
+  <text x="120" y="310" text-anchor="middle" class="line">edit a cell · apply a bulk fix</text>
+  <text x="120" y="328" text-anchor="middle" class="line">undo · revert all</text>
+
+  <path d="M220,314 L278,314" class="arrow"/>
+
+  <rect x="280" y="262" width="310" height="104" class="box"/>
+  <text x="435" y="288" text-anchor="middle" class="title">applyChange, the only writer</text>
+  <text x="435" y="310" text-anchor="middle" class="line">1. record old and new value of each cell</text>
+  <text x="435" y="328" text-anchor="middle" class="line">2. write · re-check those rows · recount</text>
+  <text x="435" y="346" text-anchor="middle" class="line">3. rebuild the list of positions</text>
+
+  <path d="M590,314 L648,314" class="arrow"/>
+
+  <rect x="650" y="262" width="200" height="104" class="box"/>
+  <text x="750" y="288" text-anchor="middle" class="title">History</text>
+  <text x="750" y="310" text-anchor="middle" class="line">one entry per action</text>
+  <text x="750" y="328" text-anchor="middle" class="line">1 cell, or 67,366 cells</text>
+  <text x="750" y="346" text-anchor="middle" class="small">undo pops the newest entry</text>
+
+  <!-- writes go up into the store -->
+  <path d="M435,262 L435,214 L615,214 L615,166" class="arrow"/>
+  <text x="525" y="206" text-anchor="middle" class="label">writes values and marks</text>
+</svg>
